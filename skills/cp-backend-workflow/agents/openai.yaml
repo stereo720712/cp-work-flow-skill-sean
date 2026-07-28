@@ -1,0 +1,4 @@
+interface:
+  display_name: "CP 後端任務總控"
+  short_description: "串接 CP 後端任務全流程、多 repo 進度與回報"
+  default_prompt: "使用 $cp-backend-workflow 協調這個 CP 後端任務到 MR 完成。"

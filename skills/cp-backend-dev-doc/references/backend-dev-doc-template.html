@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <title>Task-{編號} 後端開發文件</title>
+</head>
+<body>
+
+<!-- 注意：禪道富文本會吃掉 <style>/class，所有樣式一律用 inline 屬性（border/cellpadding…）。 -->
+
+<h1>TASK#{編號} {任務標題} — 後端開發文件</h1>
+
+<ul>
+  <li>禪道：{任務連結}</li>
+  <li>沖刺：{版本，例如 lemo v1.25.1}</li>
+  <li>後端子任務：#{子任務編號}（{負責人}）</li>
+  <li>影響服務：{服務名，例如 otc-advertising-order-bll}</li>
+  <li>分支：{待確認}</li>
+</ul>
+
+<hr/>
+
+<h2>一、問題點 / 需求</h2>
+<p>{一兩句白話講清楚要做什麼、現在的狀況是什麼。}</p>
+<p>相關接口：</p>
+<pre>{HTTP method} {接口路徑}
+（對外網關路徑：{gateway 路徑}）</pre>
+
+<hr/>
+
+<h2>二、問題出在哪 / 現況分析（code 確認）</h2>
+<p>呼叫路徑：{Controller.method} → {ServiceImpl.method}</p>
+<p>檔案：<code>{相對路徑}</code></p>
+<p>現在的邏輯（約第 {N} 行）：</p>
+<pre>{貼上關鍵 code 片段}</pre>
+<p>{說明為什麼會這樣、根因是什麼，用白話。}</p>
+
+<!-- 需要時放表格佐證，例如欄位含義 -->
+<table border="1" cellpadding="6" cellspacing="0" width="100%">
+  <tr><th>表</th><th>欄位</th><th>是誰 / 含義</th></tr>
+  <tr><td>{table}</td><td>{column}</td><td>{說明}</td></tr>
+</table>
+
+<hr/>
+
+<h2>三、怎麼修</h2>
+<p>{一句話講修法方向。}</p>
+<pre>{貼上修改後的 code}</pre>
+<p>修改重點：</p>
+<ol>
+  <li>{改動點 1}</li>
+  <li>{改動點 2}</li>
+</ol>
+<p>{有可選作法 / 待拍板的地方，標 {待確認} 並說明。}</p>
+
+<hr/>
+
+<h2>四、API</h2>
+<table border="1" cellpadding="6" cellspacing="0" width="100%">
+  <tr><th>項目</th><th>內容</th></tr>
+  <tr><td>路徑</td><td>{method} {path}</td></tr>
+  <tr><td>Request</td><td>{VO 名稱與欄位}</td></tr>
+  <tr><td>Response</td><td>{DTO 名稱}</td></tr>
+  <tr><td>變更</td><td>{新增 / 修改 / 無變更}</td></tr>
+</table>
+
+<hr/>
+
+<h2>五、資料庫變更</h2>
+<p>{無變更就寫「無」；有的話附可執行 SQL。}</p>
+<pre>{ALTER / CREATE 語句}</pre>
+
+<hr/>
+
+<h2>六、要注意的地方</h2>
+<ul>
+  <li>{影響檔案 / 風險點}</li>
+  <li>是否碰 <code>@GlobalTransactional</code> / 資金流程 / token 白名單 / Redis</li>
+  <li>提測時給測試跑的情境：
+    <ol>
+      <li>{正向情境}</li>
+      <li>{異常 / 越權情境，寫清楚改前改後差異}</li>
+    </ol>
+  </li>
+</ul>
+
+<hr/>
+
+<h2>七、估時</h2>
+<ul>
+  <li>{工作內容}：{h}h</li>
+  <li>{工作內容}：{h}h</li>
+</ul>
+
+</body>
+</html>

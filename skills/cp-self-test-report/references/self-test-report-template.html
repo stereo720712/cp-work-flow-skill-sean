@@ -1,0 +1,115 @@
+<!--
+  後端功能自測報告 — 禪道官方模板（主管指定格式）
+  填寫說明：
+  - 每個受影響的後端模組 = 一個 <h2>，模組內重複「1 功能場景 / 2 資料庫核對 / 3 單元測試 / 4 其他測試」四段
+  - 多個模組用 <hr /> 分隔後重複整組結構
+  - 直接貼進禪道富文本；table 用 inline style，code/JSON/SQL 用 <pre>
+  - [方括號] 內為待填提示，完成後移除
+-->
+<h1>後端功能自測報告</h1>
+<h2>[模組名稱，例如：otc-account-base]</h2>
+<h3>1. [功能場景名稱，例如：提幣限額配置驗證]<br /></h3>
+<table style="width:1106.66px;" class="">
+  <tbody>
+    <tr>
+      <th>測試流程</th>
+      <th>API | 操作 (Input)</th>
+      <th>執行結果 (Output)</th>
+      <th>敘述 / 驗證點</th>
+    </tr>
+  </tbody>
+  <tbody>
+    <tr>
+      <td><span style="font-weight:700;">正向流程：</span><br />測試目標說明</td>
+      <td>
+        <p>POST /api/v1/endpoint</p>
+<pre>{
+    "id": 1,
+    "value": "example"
+}</pre>
+      </td>
+      <td>
+<pre>{
+    "code": 200,
+    "msg": "成功",
+    "success": true
+}</pre>
+      </td>
+      <td>1. 驗證狀態碼為 200<br />2. 確認資料已正確寫入</td>
+    </tr>
+    <tr>
+      <td><span style="font-weight:700;">異常流程：</span><br />邊界值或權限測試</td>
+      <td>
+        <p>POST /api/v1/endpoint</p>
+<pre>{
+    "id": -1,
+    "value": ""
+}</pre>
+      </td>
+      <td>
+<pre>{
+    "code": 400,
+    "msg": "參數錯誤",
+    "success": false
+}</pre>
+      </td>
+      <td>驗證系統是否正確攔截非法參數</td>
+    </tr>
+  </tbody>
+</table>
+<h3>2. 資料庫數值核對 (Data Integrity)</h3>
+<table style="width:1106.66px;">
+  <tbody>
+    <tr>
+      <th>核對目標</th>
+      <th>SQL 語句 / 查詢操作</th>
+      <th>執行結果</th>
+      <th>敘述</th>
+    </tr>
+  </tbody>
+  <tbody>
+    <tr>
+      <td>驗證當日提幣總額計算</td>
+      <td>
+<pre>SELECT SUM(amount) FROM t_record
+WHERE user_id = 99
+AND status = 1;</pre>
+      </td>
+      <td>result: 5000.00</td>
+      <td>SQL 結果應與 API 回傳之dayLimit欄位數值完全一致。</td>
+    </tr>
+  </tbody>
+</table>
+<h3>3. 單元測試 (Unit Test Reports</h3>
+<table style="width:1106.66px;">
+  <tbody>
+    <tr>
+      <td><span style="font-weight:700;">測試組件：</span> AccountServiceTest.java</td>
+    </tr>
+    <tr>
+      <td>
+        <div class="img-placeholder">[請貼入單元測試通過截圖 (Success Pass Screenshot)]</div>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<h3 style="color:#3C4353;">4. 其他測試結果 (Other Test Results)</h3>
+<p>非 API 類的功能驗證（如異步任務排程、報表導出、外部系統回調等）</p>
+<table class="table table-kindeditor" style="width:1106.66px;">
+  <tbody>
+    <tr>
+      <td>
+        <p>測試情境</p>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <p>測試結果截圖</p>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<p><br /></p>
+<hr />
+<h2>[下一個模組名稱]</h2>
+<p>（可重複上述 H3 與 Table 結構）</p>

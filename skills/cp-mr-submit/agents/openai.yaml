@@ -1,0 +1,4 @@
+interface:
+  display_name: "提交 CP GitLab MR"
+  short_description: "逐一建立 MR、設定 Assignee 與合併選項"
+  default_prompt: "使用 $cp-mr-submit 建立指定任務的 GitLab MR。"
