@@ -8,6 +8,8 @@
 - `skills/` — 各階段 skill（安裝到 `~/.codex/skills/` 或 `~/.claude/skills/` 使用，此處為 source）
 - `cp-task-folder-template/` — 任務資料夾範本
 
+本 repo 自帶 `skills/grill-me/`，供 `cp-backend-workflow` 在任務分級後進行需求釐清；simple 任務使用輕量 grill，complex 任務使用完整 grill，不需要依賴外部 `grilling` skill 或個人 symlink。
+
 ## 前置需求
 
 - 使用 `/cp-task-template` 從禪道任務 URL 自動讀取內容時，需先安裝並啟用 Chrome 瀏覽器 MCP 套件／擴充功能，讓工作階段可使用 `tabs_context_mcp`、`navigate` 與 `get_page_text`／`read_page`。若沒有此套件或尚未登入禪道，直接貼上任務內容即可繼續產生模板。
@@ -20,17 +22,41 @@
 /cp-backend-workflow CP-{編號}
 ```
 
+```mermaid
+flowchart TD
+    A["cp-task-template<br/>建立任務與資料夾"] --> B["Repo inventory<br/>affected-repos.md"]
+    B --> C["任務分級<br/>simple / complex"]
+    C -->|simple| D["grill-me<br/>輕量需求釐清"]
+    C -->|complex 或需求不清| E["grill-me<br/>完整需求釐清"]
+    D --> F["需求風險與測試說明"]
+    E --> G["業務說明 / 風險測試 / 上線評估"]
+    F --> H["cp-backend-dev-doc<br/>後端開發文件"]
+    G --> H
+    H --> I["cp-task-dev<br/>TDD 實作與進度紀錄"]
+    I --> J["cp-code-review / cp-self-test-report"]
+    J --> K["commit<br/>使用者明確要求"]
+    K --> L["push<br/>使用者明確要求"]
+    L --> M["cp-mr-description<br/>產 MR 描述"]
+    M --> N["cp-mr-submit<br/>建立 GitLab MR"]
+    N --> O["QA 測試矩陣報告<br/>MR 後收尾產物"]
+    I --> P["cp-merge-conflict<br/>衝突處理"]
+    M --> P
+```
+
 1. `cp-task-template`：建立禪道主任務、前／後端子任務與任務資料夾。
 2. Repo inventory：建立 `project-doc/affected-repos.md`，確認實際受影響的 repo。
-3. `cp-backend-dev-doc`：探索 codebase，產生後端開發文件 HTML／Markdown。
-4. `cp-task-dev`：需求分析、TDD 測試計畫、Red → Green → Refactor、開發進度紀錄。
-5. `cp-code-review`：需要時進行提測前 review。
-6. `cp-self-test-report`：需要時產生後端自測報告。
-7. `commit`：使用者明確要求後執行 commit。
-8. `push`：使用者明確要求後執行 push。
-9. `cp-mr-description`：產生每個 repo 的 MR 描述。
-10. `cp-mr-submit`：使用者確認後建立 GitLab MR。
-11. `cp-merge-conflict`：發生合併衝突時分析並等待使用者確認後修改。
+3. 任務分級與需求釐清：判斷 `simple` / `complex`，並使用 `grill-me` 逐題確認；simple 使用輕量 grill，complex 使用完整 grill。
+4. 會議前置文件：產出業務說明、需求風險與測試說明、上線評估。
+5. `cp-backend-dev-doc`：探索 codebase，產生後端開發文件 HTML／Markdown。
+6. `cp-task-dev`：需求分析、TDD 測試計畫、Red → Green → Refactor、開發進度紀錄。
+7. `cp-code-review`：需要時進行提測前 review。
+8. `cp-self-test-report`：需要時產生後端自測報告。
+9. `commit`：使用者明確要求後執行 commit。
+10. `push`：使用者明確要求後執行 push。
+11. `cp-mr-description`：產生每個 repo 的 MR 描述。
+12. `cp-mr-submit`：使用者確認後建立 GitLab MR。
+13. QA 測試矩陣報告：MR 建立後，依最終需求、MR、自測與上線評估產生交付 QA 的測試矩陣。
+14. `cp-merge-conflict`：發生合併衝突時分析並等待使用者確認後修改。
 
 其中 review 和自測報告是可依任務需求啟用的階段；coding 完成後，必須先完成需要的驗證，再進入 commit、push 與 MR 流程。
 
@@ -43,6 +69,9 @@ task-doc/{禪道衝刺版號}/task-{任務編號}/
 ├── project-doc/
 │   ├── requirement-analysis.md
 │   ├── affected-repos.md
+│   ├── business-brief.md
+│   ├── requirement-risk-test-brief.md
+│   ├── release-assessment.md
 │   └── backend-dev-doc.md
 ├── test-file-script/
 │   └── tdd-test-plan.md
@@ -51,8 +80,12 @@ task-doc/{禪道衝刺版號}/task-{任務編號}/
 │   ├── requirement-changes.md
 │   └── dev-progress.md
 └── end-version-report/
-    └── mr-description/
+    ├── mr-description/
+    ├── qa-test-matrix/
+    └── release-assessment/
 ```
+
+`simple` 任務至少維護 `requirement-risk-test-brief.md`；`complex` 任務額外維護 `business-brief.md` 與 `release-assessment.md`。涉及 DB / Redis / 預發正式共用資源時，預設為 `complex`。QA 測試矩陣報告是 MR 建立後的收尾產物，放在 `end-version-report/qa-test-matrix/`。
 
 跨 session 續跑時，先讀取：
 
@@ -60,6 +93,9 @@ task-doc/{禪道衝刺版號}/task-{任務編號}/
 workflow-state.md
 requirement-changes.md
 affected-repos.md
+business-brief.md
+requirement-risk-test-brief.md
+release-assessment.md
 dev-progress.md
 ```
 
@@ -105,7 +141,7 @@ task-doc/{衝刺版號}/task-{編號}/
 ```text
 請使用 cp-task-dev 開始實作 CP-5987。
 任務目錄：task-doc/1_25_0/task-5987
-請先讀取既有 workflow-state、requirement-changes、affected-repos 與後端開發文件，
+請先讀取既有 workflow-state、requirement-changes、affected-repos、會議前置文件與後端開發文件，
 先完成需求分析和 TDD 測試計畫，再開始 Red / Green / Refactor。
 ```
 
@@ -139,7 +175,7 @@ handoff/dev-progress.md
 下次接續同一個任務時，直接提供任務目錄並說明「續跑」即可：
 
 ```text
-請續跑 task-doc/1_25_0/task-5987，先讀取 workflow-state.md、requirement-changes.md 和 dev-progress.md，
+請續跑 task-doc/1_25_0/task-5987，先讀取 workflow-state.md、requirement-changes.md、affected-repos.md、會議前置文件和 dev-progress.md，
 從第一個 pending、blocked 或 needs_update 的階段繼續。
 ```
 
@@ -180,6 +216,7 @@ cp -R skills/cp-task-dev/. ~/.codex/skills/cp-task-dev/
 | 7 提交 MR | **cp-mr-submit** | 透過 Chrome 建立 GitLab MR、設定 Assignee 與 merge options | MR URL 清單 |
 | 8 合併衝突 | **cp-merge-conflict** | 半自動：分析兩側改動給建議，人確認才寫入 | 合併建議 |
 
+| 輔助 | **grill-me** | 逐題釐清任務需求、風險、測試與上線決策；simple 輕量、complex 完整 | 確認後供業務說明、風險測試說明、上線評估更新 |
 | 總控 | **cp-backend-workflow** | 判斷目前階段並協調各子 skill，管理多 repo 進度 | 完整流程狀態與 MR URL |
 
 ## 設計原則

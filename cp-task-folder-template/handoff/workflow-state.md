@@ -8,6 +8,8 @@
 - sprint_dir:
 - task_dir:
 - target_branch: master
+- task_size: simple / complex / unknown
+- grill_me: pending / done / skipped
 - current_requirement_version: R0
 - last_change_at:
 - change_log: handoff/requirement-changes.md
@@ -28,9 +30,13 @@
 | 主任務描述 | project-doc/ | pending |
 | 後端子任務描述 | project-doc/ | pending |
 | 前端子任務描述 | project-doc/ | pending |
+| 業務說明 | project-doc/business-brief.md | pending |
+| 需求風險與測試說明 | project-doc/requirement-risk-test-brief.md | pending |
+| 上線評估 | project-doc/release-assessment.md | pending |
 | 後端開發文件 | project-doc/ | pending |
 | 自測報告 | test-file-script/ | pending |
 | MR 描述 | end-version-report/mr-description/ | pending |
+| QA 測試矩陣報告 | end-version-report/qa-test-matrix/qa-test-matrix.md | pending |
 
 ## 使用者決策
 
@@ -38,6 +44,9 @@
 - commit:
 - push:
 - submit_mr:
+- grill_me:
+- business_brief:
+- release_assessment:
 
 ## 最近進度
 

@@ -36,6 +36,12 @@ description: >
 
 若任務編號不明，詢問使用者。若已有 `task_dir`，所有產出一律寫入 `task_dir/project-doc/`，不要自行組舊路徑。
 
+若已有 `task_dir`，先讀取以下文件作為設計輸入；文件不存在時不要自行捏造內容，改以 `{待確認}` 標示或回報需先補齊：
+
+- `{task_dir}/project-doc/business-brief.md`：大任務的業務流程與角色影響。
+- `{task_dir}/project-doc/requirement-risk-test-brief.md`：PM / 後端 / 前端 / QA 會議確認過的改動、風險與測試說明。
+- `{task_dir}/project-doc/release-assessment.md`：預發 / 正式上線評估，尤其 DB / Redis 共用資源影響。
+
 ### Step 2：探索 Codebase
 
 Codebase 根目錄：`/Users/jixiangwang/Documents/pte-work/gitlab/cp-v2/cp-backend/java-service`
@@ -70,6 +76,7 @@ Codebase 根目錄：`/Users/jixiangwang/Documents/pte-work/gitlab/cp-v2/cp-back
 - 需要新增的資料庫欄位 / 新表
 - 需要新增 / 修改的 Redis key
 - 跨服務呼叫影響
+- 對測試說明與預發 / 正式上線評估的技術補充
 
 若有不確定的設計決策，向使用者提問，每次 1~2 個問題。
 

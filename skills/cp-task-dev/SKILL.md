@@ -22,13 +22,19 @@ description: >
 - `test-file-script/tdd-test-plan.md`：測試案例、預期失敗結果、測試命令與完成狀態。
 - `handoff/dev-progress.md`：每次實作／測試後的進度、變更檔案、結果、阻塞與下一步。
 
+若任務資料夾中已有以下文件，必須先讀取並作為實作前輸入：
+
+- `project-doc/business-brief.md`：大任務的業務流程與角色影響。
+- `project-doc/requirement-risk-test-brief.md`：PM / 後端 / 前端 / QA 會議確認過的改動、風險與測試說明。
+- `project-doc/release-assessment.md`：預發 / 正式上線評估，尤其 DB / Redis 共用資源影響。
+
 使用 `references/` 下的同名模板建立文件；若文件已存在，保留既有內容，在原文件上追加版本與進度，不覆蓋歷史紀錄。
 
 ## 工作流程
 
-1. **確認上下文**：讀取 `workflow-state.md`、`requirement-changes.md`、`affected-repos.md` 與後端開發文件，確認 `task_id`、`sprint_version`、`task_dir` 及各 repo。
+1. **確認上下文**：讀取 `workflow-state.md`、`requirement-changes.md`、`affected-repos.md`、業務 / 風險 / 測試說明、上線評估與後端開發文件，確認 `task_id`、`sprint_version`、`task_dir` 及各 repo。
 2. **需求分析**：將需求拆成可驗收條件，列出 API、DB、權限、錯誤處理、相容性與不在範圍內的項目。資訊不足時先詢問，不用猜測關鍵行為。
-3. **建立 TDD 計畫**：依受影響 repo 和業務場景安排測試，至少涵蓋主要成功流程、輸入／權限／資料異常與回歸風險。標記每個案例的 Red、Green、Refactor 狀態。
+3. **建立 TDD 計畫**：依受影響 repo、業務場景、風險與測試說明安排測試，至少涵蓋主要成功流程、輸入／權限／資料異常、DB / Redis 影響與回歸風險。標記每個案例的 Red、Green、Refactor 狀態。
 4. **Red**：先新增或調整測試，執行指定測試命令，確認測試因缺少行為而失敗；若無法執行，記錄原因與替代驗證方式。
 5. **Green**：以最小實作使測試通過，避免順手擴大範圍；每個循環記錄變更檔案與測試結果。
 6. **Refactor**：在測試通過後整理實作，重新執行受影響測試與必要的回歸測試。

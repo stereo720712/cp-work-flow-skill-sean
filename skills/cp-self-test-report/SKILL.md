@@ -55,6 +55,11 @@ description: >
 
 若 `task-doc/{衝刺版號}/task-{編號}/project-doc/task-{編號}-backend-dev-doc.md` 存在，優先讀取作為設計依據。若由 `cp-backend-workflow` 呼叫，優先使用其傳入的 `task_dir`。
 
+若 `task_dir` 中存在以下文件，也必須讀取並對齊測試範圍：
+
+- `{task_dir}/project-doc/requirement-risk-test-brief.md`
+- `{task_dir}/project-doc/release-assessment.md`
+
 ### Step 2：探索 Codebase
 
 Codebase 根目錄：`/Users/jixiangwang/Documents/pte-work/gitlab/cp-v2/cp-backend/java-service`
@@ -88,6 +93,8 @@ Codebase 根目錄：`/Users/jixiangwang/Documents/pte-work/gitlab/cp-v2/cp-back
 - 格式錯誤 / 非法值
 - 業務邏輯不通過（例如餘額不足、狀態錯誤）
 - 權限不足（若有）
+
+若需求風險與測試說明或上線評估已存在，自測案例要覆蓋其中的 P0 / 高風險項目，尤其 DB / Redis 影響與預發驗證重點。
 
 ### Step 4：建立任務資料夾（若不存在）
 

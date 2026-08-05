@@ -16,6 +16,8 @@ description: >
 |---|---|---|
 | 任務模板 | `cp-task-template` | `task-{編號}/`、禪道主／子任務 HTML |
 | Repo inventory | 總控維護 | `project-doc/affected-repos.md` |
+| 任務分級 / 需求釐清 | 總控 + `grill-me` | 任務規模判斷、待確認問題 |
+| 業務 / 風險 / 測試說明 | 總控維護 | 業務說明、需求風險與測試說明、上線評估 |
 | 後端設計 | `cp-backend-dev-doc` | backend dev doc HTML／Markdown |
 | TDD 實作 | `cp-task-dev` | 需求分析、TDD 測試計畫、開發進度與交接紀錄 |
 | commit | `commit` | 繁中 Conventional Commit |
@@ -23,6 +25,7 @@ description: >
 | review | `cp-code-review` | 提測前 review 意見 |
 | MR 描述 | `cp-mr-description` | 每個 repo 一份 MR Markdown |
 | MR 提交 | `cp-mr-submit` | GitLab MR、Assignee、merge options、MR URL |
+| QA 測試矩陣報告 | 總控維護 | MR 建立後的 QA 測試矩陣報告 |
 | 衝突 | `cp-merge-conflict` | 衝突分析與合併建議 |
 
 ## 啟動時收集
@@ -32,6 +35,9 @@ description: >
 - 禪道／CP 任務編號與任務 URL 或內容。
 - 禪道衝刺版號（Scrum sprint version），例如 `1_25_0`；任務資料夾放在 `task-doc/{衝刺版號}/task-{編號}/`。
 - 受影響 repo、目前分支與目標分支（預設 `master`）。
+- 任務規模：`simple` / `complex`；若不明，先依影響範圍判斷。
+- 是否需要跨 PM / 後端 / 前端 / QA 會議討論。
+- 是否涉及預發 / 正式共用 DB、Redis、MQ、排程、回調或資料初始化。
 - 是否要產出自測報告。
 - 實作方式：由 `cp-task-dev` 協助 TDD，或由使用者人工 coding。
 - 是否要執行 commit、push、產生 MR 描述、提交 GitLab MR。
@@ -45,6 +51,10 @@ description: >
 - `handoff/workflow-state.md`：目前流程狀態、repo 進度、文件產物、外部操作結果。
 - `handoff/requirement-changes.md`：需求變更紀錄與返工判斷。
 - `project-doc/affected-repos.md`：本任務受影響 repo 清單，後續 review / commit / push / MR 都以它為準。
+- `project-doc/business-brief.md`：大任務的業務說明 / 業務梳理文件。
+- `project-doc/requirement-risk-test-brief.md`：給 PM / 後端 / 前端 / QA 會議討論的需求、風險與測試說明。
+- `project-doc/release-assessment.md`：預發 / 正式上線評估，特別記錄 DB / Redis 影響。
+- `end-version-report/qa-test-matrix/qa-test-matrix.md`：MR 建立後的 QA 測試矩陣報告。
 
 啟動時先執行：
 
@@ -95,8 +105,82 @@ description: >
 - 業務規則變更：後端開發文件、coding、review、自測報告、MR 描述標記 `needs_update`。
 - 只改禪道文字描述：任務模板或 MR 描述標記 `needs_update`。
 - 只補測試說明：自測報告標記 `needs_update`。
+- 會議後調整業務流程、風險或測試範圍：業務說明、需求風險與測試說明標記 `needs_update`；若影響實作，再標記後端開發文件與 coding。
+- 上線策略、DB / Redis / 預發正式共用資源評估變更：上線評估、自測報告、MR 描述標記 `needs_update`；若影響程式或資料腳本，再標記 coding。
+- MR 建立後又變更需求、測試失敗或調整上線策略：QA 測試矩陣報告標記 `needs_update`，待 MR / 文件重新定案後再重產。
 - MR 已建立後才變更需求：不自動重開 MR，只標記 MR 需要更新並等待使用者確認。
 - 需求新增或移除服務 / repo：`affected-repos.md` 標記 `needs_update`，並重新判斷 review、commit、push、MR 範圍。
+
+## 任務分級與 grill-me 導入
+
+在 `cp-task-template` 建立任務資料夾、且 `affected-repos.md` 初步完成後，先做任務分級，再決定文件深度。
+
+### 分級規則
+
+符合任一條件時，預設判定為 `complex`：
+
+- 跨 2 個以上 repo，或同時影響前端 / 後端 / QA / PM 流程。
+- 涉及 DB schema、Redis、MQ、排程、回調、通知、資料初始化或資料修復。
+- 涉及資金、訂單、商戶、交易員、權限、風控或狀態機。
+- 需要評估預發 / 正式共用 DB、Redis，或預發作為正式備援的上線影響。
+- 需求有多角色、多狀態、多流程分支，或 PM / QA 需要拿文件開會對齊。
+
+不符合上述條件、且是單 repo 小改 / 小 API / 文案 / 查詢欄位時，可判定為 `simple`。
+
+### grill-me 使用時機
+
+- 所有任務在產後端開發文件前，都要先使用 `grill-me` 做需求釐清。
+- `simple` 任務：使用輕量 grill，只確認改動範圍、驗收條件、主要風險、測試重點與不做事項；通常 1~3 題即可。
+- `complex` 任務：使用完整 grill，逐題確認業務流程、角色影響、DB / Redis / MQ / 排程 / 回調 / 通知、權限 / 風控、測試範圍、上線與回滾。
+- 使用者明確說「用 grill-me 分析 / grill 一下需求」：直接啟動，不再重複確認。
+- 使用者明確說不用追問：可跳過，但要在 `workflow-state.md` 記錄 `grill_me: skipped` 與原因；此時仍需在需求風險與測試說明中標示未經 grill 確認的假設。
+
+本 workflow repo 自帶 `skills/grill-me/`。若 runtime 尚未安裝該 skill，使用本 repo 的 `skills/grill-me/SKILL.md` 規則執行同等流程，不依賴外部 `grilling` skill。
+
+`grill-me` 只負責逐題釐清決策，不直接改文件；確認結論後，總控再更新需求風險與測試說明；若為 `complex`，再更新業務說明與上線評估。QA 測試矩陣報告是 MR 建立後的收尾產物，不在此階段生成。
+
+### 分級後產物
+
+`simple` 任務至少維護：
+
+- `project-doc/requirement-risk-test-brief.md`
+
+`complex` 任務額外維護：
+
+- `project-doc/business-brief.md`
+- `project-doc/release-assessment.md`
+
+所有任務在 MR 建立後，若使用者需要交付 QA，才產生：
+
+- `end-version-report/qa-test-matrix/qa-test-matrix.md`
+
+需要貼禪道或會議分享時，再由 Markdown 轉成同名 HTML；HTML 內容要能直接貼入禪道富文本。
+
+## QA 測試矩陣報告
+
+QA 測試矩陣報告是 MR 建立後的收尾產物，不是開發前輸入文件。
+
+產生前必須確認：
+
+- `affected-repos.md` 中需要處理的 repo 已建立 MR，狀態為 `mr_created`。
+- 不存在 `needs_update`、`blocked`、`needs_confirm` 的必要 repo。
+- MR 描述、自測報告、需求風險與測試說明、上線評估都是最新狀態。
+
+若任一條件不成立，不產生正式 QA 測試矩陣報告；先回報缺少哪個前置階段。
+
+產出位置固定：
+
+```text
+end-version-report/qa-test-matrix/qa-test-matrix.md
+```
+
+內容來源：
+
+- 最終 MR URL、repo、branch。
+- `project-doc/requirement-risk-test-brief.md` 的風險與測試說明。
+- `test-file-script/` 下已完成的自測結果。
+- `project-doc/release-assessment.md` 的預發 / 正式 / DB / Redis 評估。
+- 實際 code diff 與 MR 描述。
 
 ## Repo Inventory
 
@@ -147,13 +231,15 @@ Repo 狀態只使用：
 
 1. 沒有任務資料夾：使用 `cp-task-template` 建立標準骨架與任務文件。
 2. 沒有 `project-doc/affected-repos.md` 或其狀態為 `needs_update`：建立或更新 repo inventory。
-3. 沒有後端開發文件且需求需要設計：使用 `cp-backend-dev-doc`；完成後校正 `affected-repos.md`。
-4. 仍未 coding：若使用者希望 Agent 協助實作，使用 `cp-task-dev` 先完成需求分析與 TDD 計畫，再進入實作；若由使用者人工 coding，仍要求以同一組文件記錄測試與進度，不假設程式已修改。
-5. 有未提交程式變更：先確認 `cp-task-dev` 的 `dev-progress.md` 與測試紀錄已更新，再依 `affected-repos.md` 範圍執行 `cp-code-review`（使用者要求時），再用 `commit`；保留不相關變更，不自動加入。
-6. 分支未 push：依 `affected-repos.md` 範圍在使用者明確要求時執行 push；網路受限時申請授權，不重複執行已成功的 push。
-7. 自測報告：只有使用者要求或任務明確要求時使用 `cp-self-test-report`；使用者說「不用自測／不寫自測報告」時跳過，並在後續 MR 描述標記為不產出。
-8. 要開 MR：依 `affected-repos.md` 範圍先使用 `cp-mr-description` 產生每個 repo 的 Markdown，再由使用者確認內容後使用 `cp-mr-submit` 實際建立 MR。
-9. 發生 merge conflict：停止後續提交，使用 `cp-merge-conflict` 分析，等待使用者確認合併方案。
+3. 尚未任務分級或文件缺失：判斷 `simple` / `complex`；使用 `grill-me` 釐清後，simple 產需求風險與測試說明，complex 另產業務說明與上線評估。
+4. 沒有後端開發文件且需求需要設計：使用 `cp-backend-dev-doc`；完成後校正 `affected-repos.md`。
+5. 仍未 coding：若使用者希望 Agent 協助實作，使用 `cp-task-dev` 先完成需求分析與 TDD 計畫，再進入實作；若由使用者人工 coding，仍要求以同一組文件記錄測試與進度，不假設程式已修改。
+6. 有未提交程式變更：先確認 `cp-task-dev` 的 `dev-progress.md` 與測試紀錄已更新，再依 `affected-repos.md` 範圍執行 `cp-code-review`（使用者要求時），再用 `commit`；保留不相關變更，不自動加入。
+7. 分支未 push：依 `affected-repos.md` 範圍在使用者明確要求時執行 push；網路受限時申請授權，不重複執行已成功的 push。
+8. 自測報告：只有使用者要求或任務明確要求時使用 `cp-self-test-report`；使用者說「不用自測／不寫自測報告」時跳過，並在後續 MR 描述標記為不產出。
+9. 要開 MR：依 `affected-repos.md` 範圍先使用 `cp-mr-description` 產生每個 repo 的 Markdown，再由使用者確認內容後使用 `cp-mr-submit` 實際建立 MR。
+10. MR 建立完成後：若需要交付 QA，依最終 MR、需求風險與測試說明、自測報告、上線評估產生 `end-version-report/qa-test-matrix/qa-test-matrix.md`。
+11. 發生 merge conflict：停止後續提交，使用 `cp-merge-conflict` 分析，等待使用者確認合併方案。
 
 ## 多 repo 任務規則
 

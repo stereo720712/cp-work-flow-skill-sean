@@ -23,6 +23,7 @@ description: >
 2. **主任務描述** HTML
 3. **後端子任務描述** HTML（含業務邏輯說明 + 自測報告框架）
 4. **前端子任務描述** HTML（改動表格）
+5. **會議與收尾文件骨架**：業務說明、需求風險與測試說明、上線評估、MR 後 QA 測試矩陣報告
 
 ---
 
@@ -69,6 +70,10 @@ cp -r ~/.claude/skills/cp-task-template/references/task-folder-template \
 - `handoff/workflow-state.md`：填入 task id、任務標題、禪道衝刺版號、task dir、初始文件狀態。
 - `handoff/requirement-changes.md`：保留 `R0 - 初始需求`，將初始任務內容摘要填入「現在」。
 - `project-doc/affected-repos.md`：根據任務描述先填入可能受影響 repo；不確定的 repo 標記 `needs_confirm`，明確不需要處理但相關的 repo 標記 `not_required`。
+- `project-doc/requirement-risk-test-brief.md`：初始化給 PM / 後端 / 前端 / QA 開會討論的需求、風險與測試說明。
+- `project-doc/business-brief.md`：大任務才填寫；小任務可保留 `skipped`。
+- `project-doc/release-assessment.md`：涉及 DB / Redis / 預發正式共用資源或上線切換時填寫。
+- `end-version-report/qa-test-matrix/qa-test-matrix.md`：MR 建立後才填寫的 QA 測試矩陣報告。
 
 若使用者後續補充或修改需求，不要覆蓋初始內容；交由 `cp-backend-workflow` 追加需求版本並標記需要更新的階段。
 
@@ -135,6 +140,7 @@ cp -r ~/.claude/skills/cp-task-template/references/task-folder-template \
 - **不確定的地方用 `{待補充}` 標示**：讓使用者知道哪裡需要自己補充，不要憑空捏造 API 細節。
 - **業務邏輯要說人話**：描述要清楚，讓不熟悉這個功能的隊友也能看懂。
 - **資料夾一律套模板**：建任務資料夾只能 `cp -r` 複製 `references/task-folder-template`，不要手工 `mkdir`，否則會漏標準骨架。
+- **開發前會議材料**：任務資料夾建立後，交由 `cp-backend-workflow` 判斷 simple / complex；所有任務都先用 `grill-me` 釐清，simple 使用輕量 grill，complex 使用完整 grill，再填寫風險測試說明、業務說明與上線評估。QA 測試矩陣報告在 MR 建立後才生成。
 
 ---
 

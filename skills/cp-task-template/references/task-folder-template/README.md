@@ -47,11 +47,23 @@ cp -r ~/.claude/skills/cp-task-template/references/task-folder-template \
 - `handoff/workflow-state.md`：目前流程狀態、repo 進度、文件產物、MR URL。
 - `handoff/requirement-changes.md`：需求變更版本與返工判斷。
 - `project-doc/affected-repos.md`：本任務受影響 repo 清單，後續 review / commit / push / MR 都以它為準。
+- `project-doc/business-brief.md`：大任務的業務說明 / 業務梳理；小任務可標記 skipped。
+- `project-doc/requirement-risk-test-brief.md`：給 PM / 後端 / 前端 / QA 會議討論的需求、風險與測試說明。
+- `project-doc/release-assessment.md`：預發 / 正式上線評估，特別記錄 DB / Redis 共用資源影響。
+- `end-version-report/qa-test-matrix/qa-test-matrix.md`：MR 建立後的 QA 測試矩陣報告，作為交付 QA 的最終測試範圍。
 
-下次由 `/cp-backend-workflow` 繼續任務時，先讀這兩份文件再判斷下一步。
+下次由 `/cp-backend-workflow` 繼續任務時，先讀 workflow state、需求變更、affected repos 與會議前置文件，再判斷下一步。
 
 `cp-task-dev` 開發階段固定使用：
 
 - `project-doc/requirement-analysis.md`：開發前需求分析與驗收條件。
 - `test-file-script/tdd-test-plan.md`：Red / Green / Refactor 測試案例與結果。
 - `handoff/dev-progress.md`：開發進度、變更檔案、阻塞與接手資訊。
+
+## 任務分級與會議文件
+
+- `simple` 任務：至少維護 `requirement-risk-test-brief.md`。
+- `complex` 任務：額外維護 `business-brief.md` 與 `release-assessment.md`。
+- 涉及 DB / Redis / MQ / 排程 / 回調 / 通知、資金 / 訂單 / 商戶 / 交易員 / 權限 / 風控、或預發正式共用資源時，預設為 `complex`。
+- 所有任務都先用 `grill-me` 逐題釐清；`simple` 任務使用輕量 grill，`complex` 任務使用完整 grill，再更新上述文件。
+- QA 測試矩陣報告在 MR 建立後產出，此時需求、程式、MR、自測與上線評估都應已定案。
