@@ -193,14 +193,28 @@ handoff/dev-progress.md
 
 ### 六、安裝與同步
 
-本 repository 的 `skills/` 是 source。修改 skill 後，需同步到 Codex runtime：
+本 repository 的 `skills/` 是 source。修改 skill 後，需同步到 Codex 或 Claude runtime。
 
 ```bash
-mkdir -p ~/.codex/skills/cp-task-dev
-cp -R skills/cp-task-dev/. ~/.codex/skills/cp-task-dev/
+scripts/install-codex.sh
+scripts/install-claude.sh
 ```
 
-同步後，下一個 Codex session 即可使用最新版本。
+移除本 repository 管理的 skills：
+
+```bash
+scripts/uninstall-codex.sh
+scripts/uninstall-claude.sh
+```
+
+安裝與移除都支援先預覽：
+
+```bash
+scripts/install-codex.sh --dry-run
+scripts/uninstall-codex.sh --dry-run
+```
+
+同步後，下一個 Codex / Claude session 即可使用最新版本。
 
 ## Skills 一覽
 
