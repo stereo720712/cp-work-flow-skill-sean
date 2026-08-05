@@ -26,6 +26,23 @@ description: >
 
 ---
 
+## Workflow 模式契約
+
+若由 `cp-backend-workflow` 呼叫，且提供 `task_dir`：
+
+1. 先讀取 `{task_dir}/project-doc/affected-repos.md`，以此限定自測報告的受影響模組。
+2. 只針對類型為 `backend`、`backend-base`、`backend-open`，且狀態為 `coding_done`、`reviewed`、`committed`、`pushed`、`mr_ready`、`mr_created` 的 repo 產生正式後端自測章節。
+3. `frontend`、`other` repo 不產後端自測章節，只在回報中註明不適用。
+4. 狀態為 `pending`、`needs_confirm`、`needs_update`、`blocked`、`not_required` 的 repo 不產生正式自測章節，先回報原因與下一步。
+5. 若測試失敗，不得把自測報告或 repo 狀態標記為完成；只能記錄失敗場景、原因與待修正項，並讓 workflow 回到 `needs_update` 或 coding 階段。
+6. 完成後回報涵蓋哪些 repo、跳過哪些 repo，以及哪些 repo 仍需確認、需返工或被阻塞。
+
+若沒有 `{task_dir}/project-doc/affected-repos.md`：
+
+1. 先要求補齊 `{task_dir}/project-doc/affected-repos.md`，不產生正式自測報告。
+2. 若使用者明確要求臨時草稿，可依目前 repo / 後端開發文件 / diff 推測單一或明確的一組後端 repo 產 draft，並在回報中說明「未找到 affected-repos.md，本次為草稿，未更新 workflow 狀態，不可標記自測完成」。
+3. 若可能涉及多 repo 或推測不唯一，不產草稿，先要求補齊 `affected-repos.md`。
+
 ## 執行步驟
 
 ### Step 1：確認任務資訊
@@ -34,12 +51,15 @@ description: >
 - **任務編號**
 - **任務描述**（或已有的開發文件）
 - **禪道衝刺版號**（Scrum sprint version，例如 `1_25_0`）；若由 `cp-backend-workflow` 呼叫，優先使用其傳入的 `task_dir`
+- **受影響 repo**：workflow 模式必須先讀 `{task_dir}/project-doc/affected-repos.md`；沒有時要求補齊 inventory，不產正式自測報告。只有使用者明確要求 draft 時，才可依單一明確範圍產草稿
 
 若 `task-doc/{衝刺版號}/task-{編號}/project-doc/task-{編號}-backend-dev-doc.md` 存在，優先讀取作為設計依據。若由 `cp-backend-workflow` 呼叫，優先使用其傳入的 `task_dir`。
 
 ### Step 2：探索 Codebase
 
 Codebase 根目錄：`/Users/jixiangwang/Documents/pte-work/gitlab/cp-v2/cp-backend/java-service`
+
+若有 `affected-repos.md`，以其中已完成 coding 且非 stale 的後端 repo 為探索範圍；沒有時先要求補 inventory，只有明確要求 draft 時才依任務描述、後端開發文件與 git diff 推測。
 
 針對受影響的服務，找到：
 - Controller 的 endpoint 路徑與方法名

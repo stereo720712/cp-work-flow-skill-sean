@@ -8,6 +8,22 @@ description: >
 
 用於在 `cp-mr-description` 產生描述後，實際於 GitLab 建立 Merge Request。這個 skill 會產生外部狀態變更；使用者明確要求提交 MR 時可執行，否則建立前先確認。
 
+## Workflow 模式契約
+
+若由 `cp-backend-workflow` 呼叫，且提供 `task_dir`：
+
+1. 先讀取 `{task_dir}/project-doc/affected-repos.md`，以此作為 MR 提交範圍。
+2. 只處理狀態為 `pushed` 或 `mr_ready` 的 repo；`not_required`、`blocked` 跳過。
+3. 狀態為 `needs_confirm`、`pending`、`coding_done`、`reviewed`、`committed`、`needs_update` 的 repo 不建立 MR，先回報原因與下一步。
+4. 每個 repo 必須有 `{task_dir}/end-version-report/mr-description/mr-description-{repo}.md`；沒有描述檔時先交給 `cp-mr-description`，不要自行捏造 MR 內容。
+5. 若需求變更、測試失敗、review blocking 或 code 又修改，既有 MR 描述視為 stale；即使檔案存在，也不得建立 MR，必須先回到前序階段重產描述。
+6. 建立成功後回報 MR URL，並提醒總控同步 `workflow-state.md` 與 `affected-repos.md` 狀態為 `mr_created`。
+
+若沒有 `{task_dir}/project-doc/affected-repos.md`：
+
+1. 視為 workflow blocked：不建立 MR，先要求補齊 `{task_dir}/project-doc/affected-repos.md`。
+2. 不提供 draft 或 fallback 提交；建立 MR 會改變外部狀態，必須有 inventory 作為 repo 範圍來源。
+
 ## 執行前確認
 
 1. 取得任務編號、要提交的 repo、來源分支與目標分支（預設 `feature/task-{編號}` → `master`）。
@@ -15,6 +31,7 @@ description: >
    `task-doc/{衝刺版號}/task-{編號}/end-version-report/mr-description/mr-description-{服務名}.md`。
 3. 若描述文件不存在，先使用 `cp-mr-description` 產生；不要自行捏造 MR 內容。
 4. 先檢查 GitLab 是否已存在同一 source branch 的開啟 MR，避免重複建立。
+5. workflow 模式下 repo 清單以 `affected-repos.md` 為準；沒有該檔案時停止並要求先補 inventory。
 
 ## GitLab 操作
 

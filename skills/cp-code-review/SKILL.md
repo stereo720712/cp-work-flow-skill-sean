@@ -17,6 +17,22 @@ description: >
 
 ---
 
+## Workflow 模式契約
+
+若由 `cp-backend-workflow` 呼叫，且提供 `task_dir`：
+
+1. 先讀取 `{task_dir}/project-doc/affected-repos.md`，以此作為 self-review 的 repo 範圍。
+2. 只 review 狀態不是 `not_required`、`blocked` 的 repo；`needs_confirm` 必須先詢問使用者或由 codebase 探索確認後才 review。
+3. 每個 repo 依各自的 `路徑`、`source branch`、`target branch` 分別取得 diff，不把多個 repo 混在同一段 review。
+4. review 完成後，按 repo 回報 blocking / non-blocking / OK，並標示哪些 repo 跳過或仍需確認。
+
+若沒有 `{task_dir}/project-doc/affected-repos.md`：
+
+1. 先提醒使用者 workflow inventory 缺失，建議補齊 `affected-repos.md` 後再續跑正式 workflow。
+2. 若使用者只是要 review 目前 repo，可依使用者指定 repo、目前所在 git repo、branch 名稱與 diff 範圍推測單一 repo 後 review。
+3. 這種 fallback review 不更新 `workflow-state.md` 或 `affected-repos.md`，回報時必須說明「未找到 affected-repos.md，本次只 review 推測出的 repo，未更新 workflow 狀態」。
+4. 若可能涉及多 repo 或推測不唯一，先詢問使用者要 review 哪些 repo，或要求先補齊 `affected-repos.md`。
+
 ## 情境 A：自我 Review（提測前）
 
 ### 使用時機
@@ -25,6 +41,8 @@ description: >
 ### 執行步驟
 
 #### Step 1：確認 repo 路徑與目標分支
+
+若是 workflow 模式，優先使用 `{task_dir}/project-doc/affected-repos.md` 中狀態可 review 的 repo 清單；沒有該檔案時，先提醒補齊 inventory，只有在使用者接受 fallback review 時才用目前 repo / 使用者指定路徑 / git diff 推測。
 
 ```bash
 cd {repo 路徑} && git rev-parse --show-toplevel
@@ -49,6 +67,8 @@ git diff origin/master...HEAD --stat
 ```
 
 再針對重點檔案逐一讀取。
+
+多 repo 任務要逐 repo 執行上述 diff，不要把不同 repo 的 diff 合併成一次 review。
 
 #### Step 3：執行 Review
 
@@ -169,6 +189,7 @@ task-doc/{衝刺版號}/task-{編號}/project-doc/task-{編號}-backend-dev-doc.
 - **non-blocking 要說明為何只是建議**
 - **不確定的地方標示「需確認」**，不要腦補不存在的前提
 - **若 diff 資訊不足**，主動讀取相關 code 補充背景再 review
+- **workflow 範圍優先**：有 `affected-repos.md` 時以它為準；沒有時先要求補 inventory。若只做當前 repo fallback review，必須明確說明未更新 workflow 狀態
 
 ---
 
