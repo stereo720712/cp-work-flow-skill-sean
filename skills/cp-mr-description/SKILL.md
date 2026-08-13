@@ -58,7 +58,7 @@ git diff origin/master...HEAD --stat
 - 改動了哪些服務 / 檔案
 - 主要改動類型（新增功能、修 bug、重構）
 
-若 `task-doc/{衝刺版號}/task-{編號}/project-doc/task-{編號}-backend-dev-doc.md` 存在，讀取作為補充說明。
+若 `{task_dir}/project-doc/task-{編號}-backend-dev-doc.md` 存在，讀取作為補充說明。
 若由 `cp-backend-workflow` 傳入 `task_dir`，優先讀取 `{task_dir}/project-doc/task-{編號}-backend-dev-doc.md`，並將 MR 描述寫入 `{task_dir}/end-version-report/mr-description/`。
 
 多 repo 任務要對狀態為 `pushed` 或 `mr_ready` 的 repo 分別執行 diff 與描述產生，輸出檔名使用 `mr-description-{repo}.md`。若需求變更、測試失敗、review blocking 或 code 又修改，既有 MR 描述視為 stale，下一次進入 MR 階段時必須重新產生。

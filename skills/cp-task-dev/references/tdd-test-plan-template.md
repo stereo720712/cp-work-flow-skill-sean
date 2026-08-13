@@ -13,11 +13,17 @@
 - 主要測試層級：unit / integration / API / other
 - 不執行的測試與原因：
 
+## 可驗證目標
+
+| 目標 ID | 對應驗收條件 | 驗證方式 | 完成標準 |
+|---|---|---|---|
+| G001 |  |  |  |
+
 ## 測試案例
 
-| ID | repo / 測試檔 | 場景與前置條件 | 預期結果 | Red | Green | Refactor | 實際結果 |
-|---|---|---|---|---|---|---|---|
-| T001 |  |  |  | pending | pending | pending |  |
+| ID | 目標 ID | repo / 測試檔 | 場景與前置條件 | 預期結果 | Red | Green | Refactor | 實際結果 |
+|---|---|---|---|---|---|---|---|---|
+| T001 | G001 |  |  |  | pending | pending | pending |  |
 
 ## TDD 循環紀錄
 

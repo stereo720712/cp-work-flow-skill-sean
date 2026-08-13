@@ -62,10 +62,12 @@ flowchart TD
 
 ## 任務文件與續跑
 
-每個任務的文件路徑固定為：
+每個任務先確認任務文件根目錄 `task_root`，再建立完整任務目錄 `task_dir`。預設可建議 `task-doc/{禪道衝刺版號}/`，但不得未經確認直接建立。
+
+一般文件結構為：
 
 ```text
-task-doc/{禪道衝刺版號}/task-{任務編號}/
+{task_root}/task-{任務編號}/
 ├── project-doc/
 │   ├── requirement-analysis.md
 │   ├── affected-repos.md
@@ -122,14 +124,15 @@ dev-progress.md
 
 - CP／禪道任務編號，以及任務 URL 或完整內容。
 - 禪道 Scrum sprint version，例如 `1_25_0`。
+- 任務文件根目錄 `task_root`；若未提供，總控會先詢問，預設路徑只作建議。
 - 受影響的後端 repo；如果不確定，讓 skill 先探索 codebase。
 - 是否需要自測報告、commit、push、MR 描述或建立 MR。
 - 實作方式：由 Agent 以 TDD 協助，或由使用者自行 coding。
 
-任務文件會放在：
+任務文件會放在已確認的：
 
 ```text
-task-doc/{衝刺版號}/task-{編號}/
+{task_root}/task-{編號}/
 ```
 
 總控會依照目前文件與 repo 狀態續跑，不會重做已完成階段。若需求中途變更，會先記錄新的需求版本，再判斷哪些文件或 repo 需要返工。
@@ -231,10 +234,12 @@ scripts/uninstall-codex.sh --dry-run
 | 8 合併衝突 | **cp-merge-conflict** | 半自動：分析兩側改動給建議，人確認才寫入 | 合併建議 |
 
 | 輔助 | **grill-me** | 逐題釐清任務需求、風險、測試與上線決策；simple 輕量、complex 完整 | 確認後供業務說明、風險測試說明、上線評估更新 |
+| 品質閘門 | **karpathy-guidelines** | 融入 `cp-backend-workflow`、`cp-task-dev`、`cp-code-review`：先釐清假設、保持簡潔、精準修改、定義可驗證目標 | 更小範圍的 diff、可追溯的 TDD case、明確驗證標準 |
 | 總控 | **cp-backend-workflow** | 判斷目前階段並協調各子 skill，管理多 repo 進度 | 完整流程狀態與 MR URL |
 
 ## 設計原則
 
 - **coding 可協助但不越界**：`cp-task-dev` 可協助 TDD 實作與紀錄；commit、push、MR 等外部狀態操作仍需使用者明確要求。
+- **Karpathy 原則作為品質閘門**：需求不清先問，simple 任務維持最小設計，coding 只改 `affected-repos.md` 內必要範圍，review 檢查是否有任務外功能、過度抽象或無驗證標準的改動。
 - **合併衝突人工優先**：cp-merge-conflict 只給分析與建議，人是最後手段。
 - **source 與安裝同步**：改 `~/.claude/skills/` 後要 copy 回本 repo `skills/`，避免 source 落後。

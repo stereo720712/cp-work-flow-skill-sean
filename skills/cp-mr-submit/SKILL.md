@@ -28,7 +28,7 @@ description: >
 
 1. 取得任務編號、要提交的 repo、來源分支與目標分支（預設 `feature/task-{編號}` → `master`）。
 2. 確認每個 repo 的分支已 push，並讀取對應文件：
-   `task-doc/{衝刺版號}/task-{編號}/end-version-report/mr-description/mr-description-{服務名}.md`。
+   `{task_dir}/end-version-report/mr-description/mr-description-{服務名}.md`。
 3. 若描述文件不存在，先使用 `cp-mr-description` 產生；不要自行捏造 MR 內容。
 4. 先檢查 GitLab 是否已存在同一 source branch 的開啟 MR，避免重複建立。
 5. workflow 模式下 repo 清單以 `affected-repos.md` 為準；沒有該檔案時停止並要求先補 inventory。

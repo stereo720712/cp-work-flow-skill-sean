@@ -1,6 +1,6 @@
 # 後端開發文件模板
 
-儲存為 `task-{編號}-backend-dev-doc.md`，放在 `task-doc/{衝刺版號}/task-{編號}/project-doc/` 資料夾。
+儲存為 `task-{編號}-backend-dev-doc.md`，放在 `{task_dir}/project-doc/` 資料夾。
 
 ---
 

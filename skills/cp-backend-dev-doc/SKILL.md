@@ -13,8 +13,8 @@ description: >
 根據使用者描述的任務需求，探索 java-service codebase，起草後端開發文件並儲存到本地。
 
 **產出物（同一份內容，兩種格式）：**
-- `task-doc/{衝刺版號}/task-{編號}/project-doc/task-{編號}-backend-dev-doc.html`（HTML 格式，方便直接貼進禪道卡）
-- `task-doc/{衝刺版號}/task-{編號}/project-doc/task-{編號}-backend-dev-doc.md`（Markdown 格式，方便開發者閱讀）
+- `{task_dir}/project-doc/task-{編號}-backend-dev-doc.html`（HTML 格式，方便直接貼進禪道卡）
+- `{task_dir}/project-doc/task-{編號}-backend-dev-doc.md`（Markdown 格式，方便開發者閱讀）
 
 **文件內容：**
 1. 業務邏輯流程說明
@@ -34,7 +34,7 @@ description: >
 - **初步判斷影響哪些服務**（若有提到）
 - **禪道衝刺版號**（Scrum sprint version，例如 `1_25_0`）；若由 `cp-backend-workflow` 呼叫，優先使用其傳入的 `task_dir`
 
-若任務編號不明，詢問使用者。若已有 `task_dir`，所有產出一律寫入 `task_dir/project-doc/`，不要自行組舊路徑。
+若任務編號不明，詢問使用者。若已有 `task_dir`，所有產出一律寫入 `task_dir/project-doc/`，不要自行組舊路徑。若沒有 `task_dir`，先要求使用者或 `cp-backend-workflow` 確認 `task_root` / `task_dir`，不得使用寫死絕對路徑。
 
 若已有 `task_dir`，先讀取以下文件作為設計輸入；文件不存在時不要自行捏造內容，改以 `{待確認}` 標示或回報需先補齊：
 
@@ -80,17 +80,13 @@ Codebase 根目錄：`/Users/jixiangwang/Documents/pte-work/gitlab/cp-v2/cp-back
 
 若有不確定的設計決策，向使用者提問，每次 1~2 個問題。
 
-### Step 4：建立任務資料夾
-
-```bash
-mkdir -p /Users/jixiangwang/Documents/pte-work/gitlab/cp-v2/cp-backend/task-doc/{衝刺版號}/task-{編號}/project-doc
-```
-
-若由 `cp-backend-workflow` 傳入 `task_dir`，改建立：
+### Step 4：建立輸出資料夾
 
 ```bash
 mkdir -p {task_dir}/project-doc
 ```
+
+若沒有 `task_dir`，先停止並詢問任務文件根目錄，不自行建立舊的絕對路徑。
 
 ### Step 5：起草開發文件
 
@@ -112,8 +108,8 @@ mkdir -p {task_dir}/project-doc
 
 將兩份文件儲存到：
 ```
-/Users/jixiangwang/Documents/pte-work/gitlab/cp-v2/cp-backend/task-doc/{衝刺版號}/task-{編號}/project-doc/task-{編號}-backend-dev-doc.html
-/Users/jixiangwang/Documents/pte-work/gitlab/cp-v2/cp-backend/task-doc/{衝刺版號}/task-{編號}/project-doc/task-{編號}-backend-dev-doc.md
+{task_dir}/project-doc/task-{編號}-backend-dev-doc.html
+{task_dir}/project-doc/task-{編號}-backend-dev-doc.md
 ```
 
 儲存完成後，告知使用者：

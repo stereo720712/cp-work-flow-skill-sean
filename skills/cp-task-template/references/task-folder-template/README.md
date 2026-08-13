@@ -1,7 +1,7 @@
 # CP 任務資料夾模板（cp-task-folder-template）
 
-每接一個 CP 後端任務，複製這份結構當 `task-doc/{衝刺版號}/task-{編號}/` 的骨架。
-這裡的 `{衝刺版號}` 是禪道 Scrum sprint version，例如 `1_25_0`，
+每接一個 CP 後端任務，先確認任務文件根目錄 `task_root`，再複製這份結構當 `{task_root}/task-{編號}/` 的骨架。
+若 `task_root` 使用衝刺版號分層，這裡的 `{衝刺版號}` 是禪道 Scrum sprint version，例如 `1_25_0`，
 把開發過程產生的文件（需求、開發文件、測試、agent 交接、工具）分類歸位，
 避免散落。每個子資料夾都有一份 `*-define.md` 說明用途。
 

@@ -13,7 +13,7 @@ description: >
 根據任務需求與實際 code，產出一份完整的後端功能自測報告，格式為 HTML。
 
 **產出物：**
-- `task-doc/{衝刺版號}/task-{編號}/test-file-script/task-{編號}-self-test-report.html` — 本地儲存
+- `{task_dir}/test-file-script/task-{編號}-self-test-report.html` — 本地儲存
 - 同內容也可直接貼入禪道後端子任務的「任務描述」欄位
 
 **報告結構（依主管指定的禪道官方模板 `references/self-test-report-template.html`）：**
@@ -53,7 +53,7 @@ description: >
 - **禪道衝刺版號**（Scrum sprint version，例如 `1_25_0`）；若由 `cp-backend-workflow` 呼叫，優先使用其傳入的 `task_dir`
 - **受影響 repo**：workflow 模式必須先讀 `{task_dir}/project-doc/affected-repos.md`；沒有時要求補齊 inventory，不產正式自測報告。只有使用者明確要求 draft 時，才可依單一明確範圍產草稿
 
-若 `task-doc/{衝刺版號}/task-{編號}/project-doc/task-{編號}-backend-dev-doc.md` 存在，優先讀取作為設計依據。若由 `cp-backend-workflow` 呼叫，優先使用其傳入的 `task_dir`。
+若 `{task_dir}/project-doc/task-{編號}-backend-dev-doc.md` 存在，優先讀取作為設計依據。若由 `cp-backend-workflow` 呼叫，優先使用其傳入的 `task_dir`。若沒有 `task_dir`，先要求使用者或 `cp-backend-workflow` 確認 `task_root` / `task_dir`，不得使用寫死絕對路徑。
 
 若 `task_dir` 中存在以下文件，也必須讀取並對齊測試範圍：
 
@@ -96,17 +96,13 @@ Codebase 根目錄：`/Users/jixiangwang/Documents/pte-work/gitlab/cp-v2/cp-back
 
 若需求風險與測試說明或上線評估已存在，自測案例要覆蓋其中的 P0 / 高風險項目，尤其 DB / Redis 影響與預發驗證重點。
 
-### Step 4：建立任務資料夾（若不存在）
-
-```bash
-mkdir -p /Users/jixiangwang/Documents/pte-work/gitlab/cp-v2/cp-backend/task-doc/{衝刺版號}/task-{編號}/test-file-script
-```
-
-若由 `cp-backend-workflow` 傳入 `task_dir`，改建立：
+### Step 4：建立輸出資料夾（若不存在）
 
 ```bash
 mkdir -p {task_dir}/test-file-script
 ```
+
+若沒有 `task_dir`，先停止並詢問任務文件根目錄，不自行建立舊的絕對路徑。
 
 ### Step 5：產出 HTML 報告
 
@@ -125,7 +121,7 @@ mkdir -p {task_dir}/test-file-script
 
 儲存到：
 ```
-/Users/jixiangwang/Documents/pte-work/gitlab/cp-v2/cp-backend/task-doc/{衝刺版號}/task-{編號}/test-file-script/task-{編號}-self-test-report.html
+{task_dir}/test-file-script/task-{編號}-self-test-report.html
 ```
 
 回報：
@@ -147,5 +143,5 @@ mkdir -p {task_dir}/test-file-script
 ## 參考資料
 
 - `references/self-test-report-template.html` — 報告 HTML 格式模板
-- `task-doc/{衝刺版號}/task-{編號}/project-doc/task-{編號}-backend-dev-doc.md` — 同任務的開發文件（若已存在）
+- `{task_dir}/project-doc/task-{編號}-backend-dev-doc.md` — 同任務的開發文件（若已存在）
 - `/Users/jixiangwang/Documents/pte-work/gitlab/cp-v2/cp-backend/java-service/AGENTS.md` — 系統架構

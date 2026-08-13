@@ -85,6 +85,7 @@ git diff origin/master...HEAD --stat
 - 錯誤處理：是否有吞錯的 catch、log 是否足夠
 - DB / Redis：是否有 N+1、Redis key 是否用封裝方法
 - 可維護性：命名、職責切分
+- Karpathy 邊界：是否新增未要求功能、單次使用抽象、順手重構、格式化噪音，或改動無法追溯到驗收條件 / TDD case
 
 **跳過：**
 - 純格式、縮排問題（linter 會處理）
@@ -158,7 +159,7 @@ glab mr diff {MR_ID}
 
 若有任務編號（CP-XXXX），可讀取對應的開發文件：
 ```
-task-doc/{衝刺版號}/task-{編號}/project-doc/task-{編號}-backend-dev-doc.md
+{task_dir}/project-doc/task-{編號}-backend-dev-doc.md
 ```
 
 #### Step 3：執行 Review
@@ -190,6 +191,7 @@ task-doc/{衝刺版號}/task-{編號}/project-doc/task-{編號}-backend-dev-doc.
 - **不確定的地方標示「需確認」**，不要腦補不存在的前提
 - **若 diff 資訊不足**，主動讀取相關 code 補充背景再 review
 - **workflow 範圍優先**：有 `affected-repos.md` 時以它為準；沒有時先要求補 inventory。若只做當前 repo fallback review，必須明確說明未更新 workflow 狀態
+- **Karpathy 檢查併入 review**：發現過度設計、任務外功能、無關重構或無驗證標準的改動時，依風險列為 blocking 或 non-blocking；不要把既有歷史問題包裝成本次缺陷
 
 ---
 

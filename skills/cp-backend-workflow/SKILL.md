@@ -10,30 +10,40 @@ description: >
 
 ## 子 skill 對照
 
-依階段使用既有 skill，不要複製其細節：
+依階段使用既有 skill，不要複製其細節。每個階段先使用主 skill；輔助 skill 只在觸發條件符合時引用，用來補需求釐清、品質閘門、驗證或外部交付。
 
-| 階段 | 使用 skill | 主要產出 |
-|---|---|---|
-| 任務模板 | `cp-task-template` | `task-{編號}/`、禪道主／子任務 HTML |
-| Repo inventory | 總控維護 | `project-doc/affected-repos.md` |
-| 任務分級 / 需求釐清 | 總控 + `grill-me` | 任務規模判斷、待確認問題 |
-| 業務 / 風險 / 測試說明 | 總控維護 | 業務說明、需求風險與測試說明、上線評估 |
-| 後端設計 | `cp-backend-dev-doc` | backend dev doc HTML／Markdown |
-| TDD 實作 | `cp-task-dev` | 需求分析、TDD 測試計畫、開發進度與交接紀錄 |
-| commit | `commit` | 繁中 Conventional Commit |
-| 自測 | `cp-self-test-report` | 後端自測報告（可選） |
-| review | `cp-code-review` | 提測前 review 意見 |
-| MR 描述 | `cp-mr-description` | 每個 repo 一份 MR Markdown |
-| MR 提交 | `cp-mr-submit` | GitLab MR、Assignee、merge options、MR URL |
-| QA 測試矩陣報告 | 總控維護 | MR 建立後的 QA 測試矩陣報告 |
-| 衝突 | `cp-merge-conflict` | 衝突分析與合併建議 |
+| 階段 | 主 skill | 可引用的輔助 skill | 觸發條件 | 主要產出 / 動作 |
+|---|---|---|---|---|
+| 任務模板 | `cp-task-template` | `cp-backend-workflow` | 沒有任務資料夾、禪道任務描述需要建立或更新 | `task-{編號}/`、禪道主／子任務 HTML |
+| Repo inventory | `cp-backend-workflow` | `cp-backend-dev-doc` 探索結果 | 沒有 `affected-repos.md`、需求變更、後端設計發現新 repo | `project-doc/affected-repos.md` |
+| 任務分級 / 需求釐清 | `cp-backend-workflow` | `grill-me`、`karpathy-guidelines` | 需求未釐清、任務需分 simple / complex、存在假設或高風險業務行為 | 任務規模判斷、確認結論、待確認問題 |
+| 業務 / 風險 / 測試說明 | `cp-backend-workflow` | `grill-me` 結論、`karpathy-guidelines` | 分級完成後；complex 任務或會議前需要明確風險與測試範圍 | 業務說明、需求風險與測試說明、上線評估 |
+| 後端設計 | `cp-backend-dev-doc` | `karpathy-guidelines`、`cp-backend-workflow` 校正 repo | 需求需要 API / DB / Redis / 業務流程設計，或既有設計需更新 | backend dev doc HTML／Markdown、校正 `affected-repos.md` |
+| TDD 實作 | `cp-task-dev` | `karpathy-guidelines`、必要時 `grill-me` | 使用者要 Agent coding、需要 TDD、需求仍有實作前歧義 | 需求分析、TDD 測試計畫、開發進度與交接紀錄 |
+| Review | `cp-code-review` | `karpathy-guidelines`、`cp-task-dev` 測試紀錄 | 使用者要求 review、提測前、MR review、commit 前需要風險確認 | blocking / non-blocking / OK review 結果 |
+| 自測 | `cp-self-test-report` | `cp-task-dev` 測試紀錄、`cp-code-review` 結果 | 使用者要求自測報告、任務明確需要後端自測交付 | 後端自測報告（可選） |
+| Commit | `commit` | `cp-backend-workflow`、`cp-code-review` | 使用者明確要求 commit，且 repo 範圍與測試 / review 狀態已確認 | 繁中 Conventional Commit |
+| Push | `cp-backend-workflow` | 無專用 skill | 使用者明確要求 push，且每個 repo 已 commit | 每個 repo 各自 push |
+| MR 描述 | `cp-mr-description` | `affected-repos.md`、`cp-task-dev`、`cp-self-test-report`、`cp-code-review` | 使用者要開 MR 或產 MR 描述，且 repo 範圍已確認 | 每個 repo 一份 MR Markdown |
+| MR 提交 | `cp-mr-submit` | Chrome / GitLab 登入狀態、`cp-mr-description` | 使用者確認 MR 描述並要求建立 MR | GitLab MR、Assignee、merge options、MR URL |
+| QA 測試矩陣報告 | `cp-backend-workflow` | `cp-task-dev`、`cp-self-test-report`、`cp-mr-description` | MR 建立後，使用者需要交付 QA 測試範圍 | MR 後 QA 測試矩陣報告 |
+| 衝突 | `cp-merge-conflict` | `cp-backend-workflow` 暫停後續階段 | merge / rebase / pull 出現 conflict | 衝突分析與合併建議，使用者確認後才寫入 |
+
+輔助 skill 調用規則：
+
+- `karpathy-guidelines` 是品質閘門，不是獨立階段；需求釐清、後端設計、TDD、review 都要套用它的假設 / 簡潔 / 精準改動 / 驗證標準。
+- `grill-me` 只負責逐題釐清決策，不直接改文件；結論由總控寫入業務、風險、測試或上線文件。
+- `cp-task-dev` 的測試紀錄是 review、自測報告、MR 描述與 QA 測試矩陣的主要輸入之一。
+- `cp-code-review` 的結果可回饋到 `cp-task-dev` 修正，也可作為 commit / MR 前的風險依據。
+- `cp-backend-dev-doc` 完成後必須回饋 `affected-repos.md`，避免後續 review / commit / MR 範圍過期。
 
 ## 啟動時收集
 
 取得或確認：
 
 - 禪道／CP 任務編號與任務 URL 或內容。
-- 禪道衝刺版號（Scrum sprint version），例如 `1_25_0`；任務資料夾放在 `task-doc/{衝刺版號}/task-{編號}/`。
+- 禪道衝刺版號（Scrum sprint version），例如 `1_25_0`。
+- 任務文件根目錄 `task_root` 與完整任務目錄 `task_dir`。若使用者未提供，先詢問要放哪裡；可建議預設 `{repo}/task-doc/{衝刺版號}/` 或 `/Users/jixiangwang/Documents/pte-work/gitlab/cp-v2/cp-backend/task-doc/{衝刺版號}/`，但不得未確認就建立。
 - 受影響 repo、目前分支與目標分支（預設 `master`）。
 - 任務規模：`simple` / `complex`；若不明，先依影響範圍判斷。
 - 是否需要跨 PM / 後端 / 前端 / QA 會議討論。
@@ -42,7 +52,7 @@ description: >
 - 實作方式：由 `cp-task-dev` 協助 TDD，或由使用者人工 coding。
 - 是否要執行 commit、push、產生 MR 描述、提交 GitLab MR。
 
-若已有 `task-doc/{衝刺版號}/task-{編號}/`，先讀取既有文件與 handoff，不覆蓋既有資料。資訊不足時一次只詢問最必要的問題。
+若已有 `task_dir`，先讀取既有文件與 handoff，不覆蓋既有資料。資訊不足時一次只詢問最必要的問題。
 
 ## Workflow State 與續跑
 
@@ -114,6 +124,17 @@ description: >
 ## 任務分級與 grill-me 導入
 
 在 `cp-task-template` 建立任務資料夾、且 `affected-repos.md` 初步完成後，先做任務分級，再決定文件深度。
+
+## Karpathy Guidelines 導入點
+
+`karpathy-guidelines` 不是獨立階段，而是整個 workflow 的品質閘門。總控在呼叫子 skill 前後套用以下檢查：
+
+1. **Think Before Coding**：在 `grill-me`、後端開發文件與 `cp-task-dev` 前，明確列出已確認結論、仍是假設的內容、需要使用者決策的問題；關鍵業務行為、金流 / 訂單 / 權限 / DB 影響不明時，不直接進入 coding。
+2. **Simplicity First**：任務分級為 `simple` 時，後端開發文件與 TDD 計畫只保留支撐驗收的最小設計；不得新增泛用框架、未要求的配置化或跨場景抽象。
+3. **Surgical Changes**：`affected-repos.md` 是改動邊界；coding、review、commit、MR 只處理狀態不是 `not_required` 的 repo。發現無關重構、格式化或既有死 code，只記錄風險，不順手修改。
+4. **Goal-Driven Execution**：每個進入 coding 的 repo 都必須在 `cp-task-dev` 產出可驗證目標與測試命令；沒有實際執行的測試，不得被記錄為通過。
+
+若 runtime 未安裝 `karpathy-guidelines`，總控仍依本節執行同等規則，不阻塞流程。
 
 ### 分級規則
 
@@ -245,8 +266,8 @@ Repo 狀態只使用：
 
 - 每個 repo 都是獨立 Git root，分別檢查 branch、status、commit、push 與 MR。
 - 不把不同 repo 的變更混在同一次 commit 或 MR。
-- 任務文件一律放在：`task-doc/{衝刺版號}/task-{編號}/...`。這裡的衝刺版號是禪道 Scrum sprint version，不是程式發版版本。
-- MR 文件放在：`task-doc/{衝刺版號}/task-{編號}/end-version-report/mr-description/mr-description-{服務名}.md`。
+- 任務文件一律放在已確認的 `task_dir` 之下；預設格式可以是 `{task_root}/task-{編號}/...`，但 `task_root` 必須先確認。這裡的衝刺版號是禪道 Scrum sprint version，不是程式發版版本。
+- MR 文件放在：`{task_dir}/end-version-report/mr-description/mr-description-{服務名}.md`。
 - MR 建立設定依 `cp-mr-submit`：Assignee 預設 `austin`、Reviewer 不設定、Delete source branch 關閉、Squash commits 開啟。
 - 已存在 MR 時不得重複建立；只回報現有 MR，除非使用者要求更新。
 
@@ -256,9 +277,10 @@ Repo 狀態只使用：
 
 - `task_id`：任務編號，例如 `task-5987`。
 - `sprint_version`：禪道衝刺版號，例如 `1_25_0`。
-- `task_dir`：完整任務資料夾，例如 `task-doc/1_25_0/task-5987`。
+- `task_root`：已確認的任務文件根目錄，例如 `task-doc/1_25_0` 或其他使用者指定路徑。
+- `task_dir`：完整任務資料夾，例如 `{task_root}/task-5987`。
 
-子 skill 收到 `task_dir` 時，必須優先使用該路徑讀寫文件，不得自行退回舊路徑 `task-doc/task-{編號}`。
+子 skill 收到 `task_dir` 時，必須優先使用該路徑讀寫文件，不得自行退回舊路徑 `task-doc/task-{編號}` 或任何寫死的絕對路徑。若缺少 `task_dir`，先向使用者確認 `task_root`，再組出 `task_dir`。
 
 ## 外部操作確認
 

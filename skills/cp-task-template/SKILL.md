@@ -52,15 +52,21 @@ URL 裡的 `task-view-{編號}` 即任務編號。從頁面取得任務標題、
 
 先確認**任務編號**（如 `task-49555`）；若不明，先問使用者。
 
-接著確認**禪道衝刺版號**（Scrum sprint version，例如 `1_25_0`）與任務資料夾父目錄。預設父目錄為：
+接著確認**禪道衝刺版號**（Scrum sprint version，例如 `1_25_0`）、**任務文件根目錄**與最終 `task_dir`。不要把根目錄寫死。
 
-`/Users/jixiangwang/Documents/pte-work/gitlab/cp-v2/cp-backend/task-doc/{衝刺版號}/`
+確認順序：
 
-拿到目錄後以資料夾模板複製一份：
+1. 若 `cp-backend-workflow` 已傳入 `task_root` 或 `task_dir`，優先使用傳入值。
+2. 若使用者已提供任務目錄，直接確認是否沿用。
+3. 若未提供，先詢問要放在哪個任務文件根目錄；可建議預設值，但必須讓使用者確認。
+4. 預設根目錄只作 fallback：`/Users/jixiangwang/Documents/pte-work/gitlab/cp-v2/cp-backend/task-doc/{衝刺版號}/`。
+5. 最終 `task_dir` 一律明確寫成：`{task_root}/task-{編號}`。
+
+拿到並確認 `task_dir` 後，以資料夾模板複製一份：
 
 ```bash
 cp -r ~/.claude/skills/cp-task-template/references/task-folder-template \
-      /Users/jixiangwang/Documents/pte-work/gitlab/cp-v2/cp-backend/task-doc/{衝刺版號}/task-{編號}
+      {task_dir}
 ```
 
 建立後資料夾內含六個分類子資料夾、README、`handoff/workflow-state.md`、`handoff/requirement-changes.md`、`project-doc/affected-repos.md`，以及供 `cp-task-dev` 使用的需求分析、TDD 測試計畫和開發進度模板。後續產出的三份 HTML 建議存到 `task-{編號}/project-doc/`。
@@ -77,7 +83,7 @@ cp -r ~/.claude/skills/cp-task-template/references/task-folder-template \
 
 若使用者後續補充或修改需求，不要覆蓋初始內容；交由 `cp-backend-workflow` 追加需求版本並標記需要更新的階段。
 
-**一律用上面的 `cp -r` 複製整個 `references/task-folder-template`，禁止手工 `mkdir` 逐個建資料夾**——手建一定會漏掉標準骨架（只寫個 overview 就是這樣來的）。
+**一律用上面的 `cp -r` 複製整個 `references/task-folder-template`，禁止手工 `mkdir` 逐個建資料夾**——手建一定會漏掉標準骨架（只寫個 overview 就是這樣來的）。但目標根目錄與 `task_dir` 必須先確認，不得直接使用寫死路徑。
 
 若目標資料夾已存在，先告知使用者、不要覆蓋，問要不要沿用或改名。
 
@@ -140,6 +146,7 @@ cp -r ~/.claude/skills/cp-task-template/references/task-folder-template \
 - **不確定的地方用 `{待補充}` 標示**：讓使用者知道哪裡需要自己補充，不要憑空捏造 API 細節。
 - **業務邏輯要說人話**：描述要清楚，讓不熟悉這個功能的隊友也能看懂。
 - **資料夾一律套模板**：建任務資料夾只能 `cp -r` 複製 `references/task-folder-template`，不要手工 `mkdir`，否則會漏標準骨架。
+- **任務根目錄先確認**：建立資料夾前先確認 `task_root` / `task_dir`；預設路徑只能作建議，不得未經確認直接建立。
 - **開發前會議材料**：任務資料夾建立後，交由 `cp-backend-workflow` 判斷 simple / complex；所有任務都先用 `grill-me` 釐清，simple 使用輕量 grill，complex 使用完整 grill，再填寫風險測試說明、業務說明與上線評估。QA 測試矩陣報告在 MR 建立後才生成。
 
 ---

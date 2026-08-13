@@ -37,7 +37,7 @@
 
 ## 測試說明
 
-- 自測報告：`task-doc/{衝刺版號}/task-{任務編號}/test-file-script/task-{任務編號}-self-test-report.html`
+- 自測報告：`{task_dir}/test-file-script/task-{任務編號}-self-test-report.html`
 - 測試環境：dev
 - 主要測試場景：
   - {場景 1}
