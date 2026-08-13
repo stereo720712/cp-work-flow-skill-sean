@@ -14,6 +14,63 @@
 
 標準流程：
 
+```mermaid
+flowchart TD
+    A[使用者提供 CP / 禪道任務] --> B{已有 task_dir 與 workflow-state?}
+    B -- 否 --> C[cp-task-template 建立任務資料夾與禪道模板]
+    B -- 是 --> D[讀取 workflow-state / requirement-changes / affected-repos]
+    C --> E[建立或更新 affected-repos.md]
+    D --> E
+    E --> F{需求是否已釐清並完成分級?}
+    F -- 否 --> G[grill-me 釐清需求並判斷 simple / complex]
+    F -- 是 --> TE[產 task-estimation.html 任務估時]
+    G --> TE
+    TE --> H[維護會議前置文件]
+    H --> I{需要後端設計?}
+    I -- 是 --> J[cp-backend-dev-doc 產後端開發文件並校正 repo]
+    I -- 否 --> K{需要 Agent coding?}
+    J --> K
+    K -- 是 --> L[cp-task-dev 需求分析 / TDD / 實作 / dev-progress]
+    K -- 否 --> M[使用者人工 coding 後補齊測試與進度紀錄]
+    L --> N{是否需要 review?}
+    M --> N
+    N -- 是 --> O[cp-code-review]
+    O --> P{有 blocking 問題?}
+    P -- 是 --> L
+    P -- 否 --> Q{需要自測報告?}
+    N -- 否 --> Q
+    Q -- 是 --> R[cp-self-test-report]
+    Q -- 否 --> S{使用者要求 commit?}
+    R --> S
+    S -- 是 --> T[commit skill 分 repo commit]
+    S -- 否 --> U[等待使用者下一步]
+    T --> V{使用者要求 push?}
+    V -- 是 --> W[分 repo push]
+    V -- 否 --> U
+    W --> X{使用者要開 MR?}
+    X -- 是 --> Y[cp-mr-description 產每 repo MR 描述]
+    X -- 否 --> U
+    Y --> Z{使用者確認建立 MR?}
+    Z -- 是 --> AA[cp-mr-submit 建立 GitLab MR]
+    Z -- 否 --> U
+    AA --> AB{需要 QA 測試矩陣?}
+    AB -- 是 --> AC[產 end-version-report/qa-test-matrix/qa-test-matrix.md]
+    AB -- 否 --> AD[流程完成]
+    AC --> AD
+
+    E -. 需求變更 .-> AE[記錄 requirement-changes.md 並標記 needs_update]
+    TE -. 需求變更 .-> AE
+    H -. 需求變更 .-> AE
+    J -. 需求變更 .-> AE
+    L -. 需求變更 .-> AE
+    Y -. 需求變更 .-> AE
+    AE --> D
+
+    T -. merge / rebase / pull conflict .-> AF[cp-merge-conflict 分析衝突]
+    W -. merge / rebase / pull conflict .-> AF
+    AF --> U
+```
+
 ```text
 1. 建立任務模板
    └── cp-task-template：建立 task 資料夾、禪道主任務、前 / 後端子任務 HTML
@@ -24,31 +81,34 @@
 3. 任務分級與需求釐清
    └── simple / complex 分級，使用 grill-me 釐清改動範圍、驗收條件、風險、測試與上線決策
 
-4. 會議前置文件
+4. 任務估時
+   └── 依任務分級、affected repos、風險與待確認事項產出 task-estimation.html
+
+5. 會議前置文件
    └── simple：需求風險與測試說明
    └── complex：業務說明、需求風險與測試說明、上線評估
 
-5. 後端開發文件
+6. 後端開發文件
    └── cp-backend-dev-doc：探索 codebase，產生 backend dev doc Markdown / HTML
 
-6. TDD 實作與交接紀錄
+7. TDD 實作與交接紀錄
    └── cp-task-dev：需求分析、TDD 測試計畫、Red -> Green -> Refactor、dev-progress
 
-7. Review / 自測報告
+8. Review / 自測報告
    └── cp-code-review：提測前 self-review 或 MR review
    └── cp-self-test-report：需要時產生後端自測報告
 
-8. Commit / Push
+9. Commit / Push
    └── commit、push 都必須由使用者明確要求；多 repo 分開處理
 
-9. MR 描述與提交
+10. MR 描述與提交
    └── cp-mr-description：每個 repo 產 MR Markdown
    └── cp-mr-submit：使用者確認後建立 GitLab MR
 
-10. QA 測試矩陣報告
+11. QA 測試矩陣報告
     └── MR 建立後，依最終需求、MR、自測與上線評估產出 QA 測試矩陣
 
-11. 合併衝突
+12. 合併衝突
     └── cp-merge-conflict：分析兩側改動並提出方案，等待使用者確認後才寫入
 ```
 
@@ -61,17 +121,18 @@
 | 1. 建立任務模板 | `cp-task-template` | `cp-backend-workflow` | 沒有任務資料夾、禪道任務描述需要建立或更新 | 任務資料夾、禪道主任務 HTML、前 / 後端子任務 HTML |
 | 2. Repo inventory | `cp-backend-workflow` | `cp-backend-dev-doc` 探索結果 | 沒有 `affected-repos.md`、需求變更、後端設計發現新 repo | `project-doc/affected-repos.md` |
 | 3. 任務分級與需求釐清 | `cp-backend-workflow` | `grill-me`、`karpathy-guidelines` | 需求未釐清、任務需分 simple / complex、存在假設或高風險業務行為 | simple / complex 判斷、待確認問題、確認結論 |
-| 4. 會議前置文件 | `cp-backend-workflow` | `grill-me` 結論、`karpathy-guidelines` | 分級完成後；complex 任務或會議前需要明確風險與測試範圍 | `requirement-risk-test-brief.md`；complex 另產 `business-brief.md`、`release-assessment.md` |
-| 5. 後端開發文件 | `cp-backend-dev-doc` | `karpathy-guidelines`、`cp-backend-workflow` 校正 repo | 需求需要 API / DB / Redis / 業務流程設計，或既有設計需更新 | backend dev doc Markdown / HTML、校正 affected repos |
-| 6. TDD 實作與交接紀錄 | `cp-task-dev` | `karpathy-guidelines`、必要時 `grill-me` | 使用者要 Agent coding、需要 TDD、需求仍有實作前歧義 | `requirement-analysis.md`、`tdd-test-plan.md`、`dev-progress.md`、程式 / 測試改動 |
-| 7. Code Review | `cp-code-review` | `karpathy-guidelines`、`cp-task-dev` 測試紀錄 | 使用者要求 review、提測前、MR review、commit 前需要風險確認 | blocking / non-blocking / OK review 結果 |
-| 8. 自測報告 | `cp-self-test-report` | `cp-task-dev` 測試紀錄、`cp-code-review` 結果 | 使用者要求自測報告、任務明確需要後端自測交付 | 後端自測報告 HTML |
-| 9. Commit | `commit` | `cp-backend-workflow`、`cp-code-review` | 使用者明確要求 commit，且 repo 範圍與測試 / review 狀態已確認 | 每個 repo 各自 commit |
-| 10. Push | 無專用 skill，由總控執行 | `cp-backend-workflow` | 使用者明確要求 push，且每個 repo 已 commit | 每個 repo 各自 push |
-| 11. MR 描述 | `cp-mr-description` | `affected-repos.md`、`cp-task-dev`、`cp-self-test-report`、`cp-code-review` | 使用者要開 MR 或產 MR 描述，且 repo 範圍已確認 | `end-version-report/mr-description/` |
-| 12. MR 提交 | `cp-mr-submit` | Chrome / GitLab 登入狀態、`cp-mr-description` | 使用者確認 MR 描述並要求建立 MR | GitLab MR URL |
-| 13. QA 測試矩陣報告 | `cp-backend-workflow` | `cp-task-dev`、`cp-self-test-report`、`cp-mr-description` | MR 建立後，使用者需要交付 QA 測試範圍 | `end-version-report/qa-test-matrix/qa-test-matrix.md` |
-| 14. 合併衝突 | `cp-merge-conflict` | `cp-backend-workflow` 暫停後續階段 | 發生 conflict 時跑 | 衝突分析、合併建議、確認後寫入 |
+| 4. 任務估時 | `cp-backend-workflow` | `grill-me` 結論、`affected-repos.md`、`karpathy-guidelines` | 任務分級與主要範圍完成後；需求變更影響範圍、風險或驗收時 | `project-doc/task-estimation.html` |
+| 5. 會議前置文件 | `cp-backend-workflow` | `grill-me` 結論、`karpathy-guidelines` | 分級完成後；complex 任務或會議前需要明確風險與測試範圍 | `requirement-risk-test-brief.md`；complex 另產 `business-brief.md`、`release-assessment.md` |
+| 6. 後端開發文件 | `cp-backend-dev-doc` | `karpathy-guidelines`、`cp-backend-workflow` 校正 repo | 需求需要 API / DB / Redis / 業務流程設計，或既有設計需更新 | backend dev doc Markdown / HTML、校正 affected repos |
+| 7. TDD 實作與交接紀錄 | `cp-task-dev` | `karpathy-guidelines`、必要時 `grill-me` | 使用者要 Agent coding、需要 TDD、需求仍有實作前歧義 | `requirement-analysis.md`、`tdd-test-plan.md`、`dev-progress.md`、程式 / 測試改動 |
+| 8. Code Review | `cp-code-review` | `karpathy-guidelines`、`cp-task-dev` 測試紀錄 | 使用者要求 review、提測前、MR review、commit 前需要風險確認 | blocking / non-blocking / OK review 結果 |
+| 9. 自測報告 | `cp-self-test-report` | `cp-task-dev` 測試紀錄、`cp-code-review` 結果 | 使用者要求自測報告、任務明確需要後端自測交付 | 後端自測報告 HTML |
+| 10. Commit | `commit` | `cp-backend-workflow`、`cp-code-review` | 使用者明確要求 commit，且 repo 範圍與測試 / review 狀態已確認 | 每個 repo 各自 commit |
+| 11. Push | 無專用 skill，由總控執行 | `cp-backend-workflow` | 使用者明確要求 push，且每個 repo 已 commit | 每個 repo 各自 push |
+| 12. MR 描述 | `cp-mr-description` | `affected-repos.md`、`cp-task-dev`、`cp-self-test-report`、`cp-code-review` | 使用者要開 MR 或產 MR 描述，且 repo 範圍已確認 | `end-version-report/mr-description/` |
+| 13. MR 提交 | `cp-mr-submit` | Chrome / GitLab 登入狀態、`cp-mr-description` | 使用者確認 MR 描述並要求建立 MR | GitLab MR URL |
+| 14. QA 測試矩陣報告 | `cp-backend-workflow` | `cp-task-dev`、`cp-self-test-report`、`cp-mr-description` | MR 建立後，使用者需要交付 QA 測試範圍 | `end-version-report/qa-test-matrix/qa-test-matrix.md` |
+| 15. 合併衝突 | `cp-merge-conflict` | `cp-backend-workflow` 暫停後續階段 | 發生 conflict 時跑 | 衝突分析、合併建議、確認後寫入 |
 
 輔助 skill 調用規則：
 
@@ -94,6 +155,7 @@
 ├── project-doc/
 │   ├── requirement-analysis.md
 │   ├── affected-repos.md
+│   ├── task-estimation.html
 │   ├── business-brief.md
 │   ├── requirement-risk-test-brief.md
 │   ├── release-assessment.md
@@ -116,6 +178,7 @@
 workflow-state.md
 requirement-changes.md
 affected-repos.md
+task-estimation.html
 business-brief.md
 requirement-risk-test-brief.md
 release-assessment.md
@@ -177,10 +240,54 @@ dev-progress.md
 
 ---
 
-## Step 4：會議前置文件
+## Step 4：任務估時
+
+任務估時產出位置：
+
+```text
+project-doc/task-estimation.html
+```
+
+估時先用簡單 HTML 表格，固定欄位為：估時項目、工作內容、預估工時、備註。
+
+備註：目前這份估時表是暫時給 CP 後端流程使用；之後再抽象成更通用的估時模型，並依不同系統、環境與交付流程定義不同的估時項目。
+
+固定估時項目：
+
+```html
+<table>
+  <thead>
+    <tr>
+      <th>估時項目</th>
+      <th>工作內容</th>
+      <th>預估工時</th>
+      <th>備註</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>需求整理</td><td></td><td></td><td></td></tr>
+    <tr><td>Coding</td><td></td><td></td><td></td></tr>
+    <tr><td>自測與修改</td><td></td><td></td><td></td></tr>
+    <tr><td>文件整理</td><td></td><td></td><td></td></tr>
+    <tr><td>前端對接文件</td><td></td><td></td><td></td></tr>
+    <tr><td>Code Review / MR 準備</td><td></td><td></td><td></td></tr>
+    <tr><td>部署收尾</td><td></td><td></td><td></td></tr>
+    <tr><td>合計</td><td></td><td></td><td></td></tr>
+  </tbody>
+</table>
+```
+
+`Code Review / MR 準備` 是總控預設補上的估時項，包含 self-review、處理 review 問題與 MR 前置整理。
+
+需求變更影響 repo 範圍、實作策略、驗收條件或風險時，`task-estimation.html` 標記 `needs_update`，更新時只調整受影響列與合計。
+
+---
+
+## Step 5：會議前置文件
 
 simple 任務至少維護：
 
+- `project-doc/task-estimation.html`
 - `project-doc/requirement-risk-test-brief.md`
 
 complex 任務額外維護：
@@ -192,7 +299,7 @@ complex 任務額外維護：
 
 ---
 
-## Step 5：後端開發文件
+## Step 6：後端開發文件
 
 使用 `cp-backend-dev-doc`：
 
@@ -205,7 +312,7 @@ complex 任務額外維護：
 
 ---
 
-## Step 6：TDD 實作與進度紀錄
+## Step 7：TDD 實作與進度紀錄
 
 使用 `cp-task-dev`。固定維護：
 
@@ -227,7 +334,7 @@ complex 任務額外維護：
 
 ---
 
-## Step 7：Review 與自測報告
+## Step 8：Review 與自測報告
 
 ### Code Review
 
@@ -244,7 +351,7 @@ complex 任務額外維護：
 
 ---
 
-## Step 8：Commit / Push
+## Step 9：Commit / Push
 
 外部狀態操作邊界：
 
@@ -258,7 +365,7 @@ Commit 使用全域 `commit` skill，產生繁中 Conventional Commit。
 
 ---
 
-## Step 9：MR 描述與提交
+## Step 10：MR 描述與提交
 
 使用 `cp-mr-description`：
 
@@ -274,7 +381,7 @@ Commit 使用全域 `commit` skill，產生繁中 Conventional Commit。
 
 ---
 
-## Step 10：QA 測試矩陣報告
+## Step 11：QA 測試矩陣報告
 
 QA 測試矩陣報告是 MR 建立後的收尾產物，不是開發前文件。
 
@@ -292,7 +399,7 @@ end-version-report/qa-test-matrix/qa-test-matrix.md
 
 ---
 
-## Step 11：合併衝突
+## Step 12：合併衝突
 
 使用 `cp-merge-conflict`：
 
