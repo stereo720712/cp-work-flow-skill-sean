@@ -279,6 +279,85 @@ embedded-workflow/
 - 未 staged：本次 workflow / skill / README 修改
 - untracked：`skills/karpathy-guidelines/`
 
+## 2026-08-13 後續補充：測試報告與長線抽象方向
+
+本 session 後續又補強了自測報告與 workflow 的測試視角，重點不是只產後端 API 自測，而是要覆蓋 Web 系統的實際業務驗證。
+
+### 已補進 skill 的測試規則
+
+已更新：
+
+- `skills/cp-self-test-report/SKILL.md`
+- `skills/cp-self-test-report/references/self-test-report-template.html`
+- `skills/cp-backend-workflow/SKILL.md`
+
+並已同步到 runtime 實際載入的：
+
+- `/Users/jixiangwang/.codex/skills/cp-self-test-report/`
+- `/Users/jixiangwang/.codex/skills/cp-backend-workflow/`
+
+新增測試視角：
+
+1. 後端特有驗證
+   - API input / output。
+   - 權限、角色、資料範圍。
+   - 狀態流轉、錯誤碼、異常分支。
+   - DB / Redis / MQ / cache 副作用。
+   - 交易、併發、冪等、重複提交。
+   - 排程、回調、導出、補償腳本。
+
+2. 前端 / 頁面操作驗證
+   - 頁面入口、菜單與按鈕權限。
+   - 操作步驟、表單欄位、loading / success / error。
+   - 錯誤提示、列表刷新、狀態顯示、導出結果。
+   - Agent 無法實測時，必須列為「需開發者自行測試 / 補截圖」，不能省略。
+
+3. 前後端業務互動流程
+   - Web 任務不能只測後端 API。
+   - 核心流程要從角色 / 權限、前端入口、操作步驟，一路串到 request、後端 API / service、DB / Redis 變化、response、前端回顯 / 錯誤提示。
+   - 多角色、多狀態、多流程分支要分別列主要流程與異常流程。
+   - QA 測試矩陣也要整理這條端到端互動流程，並標出 QA / 開發者需補測與補截圖項目。
+
+這個方向很重要：`cp-self-test-report` 目前名稱仍是「後端自測報告」，但對 Web 系統任務來說，報告內容應至少提醒或記錄前端互動與業務端到端驗證，不應讓開發者誤以為 API pass 就等於業務流程 pass。
+
+### 長線交接任務
+
+長線任務仍然是把目前 CP workflow 抽象成幾本可復用規則，以及針對不同系統規劃各自 adapter / 開發流程。
+
+建議拆成幾本規則：
+
+1. `workflow-core-rules`
+   - task_dir / workflow-state / requirement-changes / affected-repos。
+   - 階段狀態、續跑、變更返工、外部操作確認。
+   - 不包含 CP、禪道、Java、GitLab 特化內容。
+
+2. `verification-rules`
+   - 後端驗證。
+   - 前端 / 頁面操作驗證。
+   - 前後端業務互動驗證。
+   - 非 API 驗證：排程、MQ、回調、導出、補償腳本。
+   - 無法由 Agent 實測時，如何生成「開發者 / QA 需補測」清單。
+
+3. `change-impact-rules`
+   - API / DB / Redis / MQ / 權限 / 狀態機 / 前後端互動變更如何標記 `needs_update`。
+   - 哪些文件與階段要返工。
+   - 哪些產物可以沿用。
+
+4. `system-adapter-rules`
+   - 不同系統只提供 adapter，不改 core。
+   - adapter 定義任務模板、codebase 探索方式、測試報告格式、review 規則、release / MR 交付方式。
+
+不同系統的流程規劃可以先切：
+
+- CP backend / Java service workflow。
+- Frontend Web workflow。
+- Full-stack Web workflow。
+- App / mobile workflow。
+- Job / data / integration workflow。
+- Embedded / firmware workflow。
+
+其中 Full-stack Web workflow 應該優先整理，因為這次補充的「後端注意事項、前端注意事項、前後端業務互動測試流程」正是 Web 系統最容易漏測的部分。
+
 本 handoff 建立後，應執行：
 
 ```bash

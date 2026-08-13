@@ -48,6 +48,7 @@ description: >
 - 任務規模：`simple` / `complex`；若不明，先依影響範圍判斷。
 - 是否需要跨 PM / 後端 / 前端 / QA 會議討論。
 - 是否涉及預發 / 正式共用 DB、Redis、MQ、排程、回調或資料初始化。
+- 是否涉及 Web 前後端業務互動流程：頁面入口、角色權限、前端操作、後端 API、DB / Redis 變化、前端回顯 / 錯誤提示。
 - 是否要產出自測報告。
 - 實作方式：由 `cp-task-dev` 協助 TDD，或由使用者人工 coding。
 - 是否要執行 commit、push、產生 MR 描述、提交 GitLab MR。
@@ -113,6 +114,7 @@ description: >
 - API input / output 變更：後端開發文件、coding、review、自測報告、MR 描述標記 `needs_update`。
 - DB schema / Redis 變更：後端開發文件、coding、review、自測報告、MR 描述標記 `needs_update`。
 - 業務規則變更：後端開發文件、coding、review、自測報告、MR 描述標記 `needs_update`。
+- 前後端業務互動流程變更，例如頁面入口、操作步驟、前端 request / response 處理、錯誤提示、角色權限：需求風險與測試說明、自測報告、MR 描述、QA 測試矩陣報告標記 `needs_update`；若影響 API 或前後端實作，再標記後端開發文件與 coding。
 - 只改禪道文字描述：任務模板或 MR 描述標記 `needs_update`。
 - 只補測試說明：自測報告標記 `needs_update`。
 - 會議後調整業務流程、風險或測試範圍：業務說明、需求風險與測試說明標記 `needs_update`；若影響實作，再標記後端開發文件與 coding。
@@ -141,6 +143,7 @@ description: >
 符合任一條件時，預設判定為 `complex`：
 
 - 跨 2 個以上 repo，或同時影響前端 / 後端 / QA / PM 流程。
+- 需要驗證完整 Web 前後端業務互動流程，包含頁面操作、API、DB / Redis 與前端回顯 / 錯誤提示。
 - 涉及 DB schema、Redis、MQ、排程、回調、通知、資料初始化或資料修復。
 - 涉及資金、訂單、商戶、交易員、權限、風控或狀態機。
 - 需要評估預發 / 正式共用 DB、Redis，或預發作為正式備援的上線影響。
@@ -202,6 +205,15 @@ end-version-report/qa-test-matrix/qa-test-matrix.md
 - `test-file-script/` 下已完成的自測結果。
 - `project-doc/release-assessment.md` 的預發 / 正式 / DB / Redis 評估。
 - 實際 code diff 與 MR 描述。
+
+QA 測試矩陣必須額外整理 Web 前後端業務互動測試流程：
+
+- 使用者角色與權限。
+- 前端頁面入口、操作步驟、欄位輸入與按鈕行為。
+- 前端送出的 API request 與後端 response / 錯誤碼。
+- 後端 DB / Redis / MQ / 排程等副作用。
+- 前端成功回顯、錯誤提示、列表刷新、狀態變更或導出結果。
+- 無法由 Agent 實測的頁面互動，要列為 QA / 開發者需補測與補截圖項目。
 
 ## Repo Inventory
 

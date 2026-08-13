@@ -72,6 +72,8 @@ Codebase 根目錄：`/Users/jixiangwang/Documents/pte-work/gitlab/cp-v2/cp-back
 - 驗證規則（`@Valid`、手動 if 判斷、錯誤碼）
 - 異常情境（什麼情況會拋錯、拋什麼錯誤碼）
 - 資料庫 / Redis 的實際寫入欄位
+- 非 API 類流程：頁面操作流程、後台操作入口、定時任務、MQ / event 消費、報表導出、外部回調、手動補償腳本等
+- 前後端業務互動流程：前端入口 / 操作步驟、實際呼叫 API、request / response、後端處理結果、DB / Redis 變化、前端回顯 / 錯誤提示
 
 從 code 推導出真實的 Input / Output 範例，而不是憑空想像。
 
@@ -79,6 +81,7 @@ Codebase 根目錄：`/Users/jixiangwang/Documents/pte-work/gitlab/cp-v2/cp-back
 - 錯誤碼：搜尋 `throw` 或 `ResultCode` / `BizException` 確認實際錯誤碼
 - API 路徑：從 `@RequestMapping` / `@PostMapping` 確認完整路徑
 - Response 結構：從 DTO 類別確認回傳欄位
+- 非 API 入口：搜尋 `@Scheduled`、`@KafkaListener`、`@RabbitListener`、`Job`、`Task`、`Export`、`Callback`、`Consumer`、`Listener`、後台菜單 / route / permission key 等，確認觸發方式與驗證點
 
 ### Step 3：設計測試案例
 
@@ -95,6 +98,18 @@ Codebase 根目錄：`/Users/jixiangwang/Documents/pte-work/gitlab/cp-v2/cp-back
 - 權限不足（若有）
 
 若需求風險與測試說明或上線評估已存在，自測案例要覆蓋其中的 P0 / 高風險項目，尤其 DB / Redis 影響與預發驗證重點。
+
+**非 API / 人工操作流程（必須檢查）：**
+- 若功能需要透過後台頁面、前端頁面或營運操作完成，必須在測試案例中記錄操作路徑、前置資料、操作步驟、預期畫面 / DB / API 結果。
+- 若功能依賴定時任務、MQ 消費、異步任務、導出、回調、補償腳本等，必須列入「其他測試結果」，描述觸發方式、驗證方式與預期結果。
+- 若 Agent 無法實際執行頁面操作、排程或外部系統回調，不可省略；要在報告中明確標記「需開發者自行測試 / 補截圖」，並列出具體要測的步驟與驗證點。
+- 不要只寫「需人工測試」；必須寫清楚測什麼、怎麼觸發、看哪個結果判定通過。
+
+**前後端業務互動流程（必須檢查）：**
+- Web 系統任務不能只列後端 API 測試；若功能由前端頁面觸發，必須補一條端到端業務流程測試。
+- 測試流程要串起：角色 / 權限、頁面入口、操作步驟、前端送出的 request、後端 API / service、DB / Redis 變化、response、前端成功回顯或錯誤提示。
+- 若涉及多角色或多狀態，例如商戶 / 交易員 / 客服 / 管理員、審核前後、訂單狀態流轉，要分別列出主要互動流程與異常流程。
+- 若 Agent 只能確認後端 code，不能確認前端實際頁面，仍要在報告中列出「需開發者自行確認的前端互動項」，包含頁面路徑、操作按鈕、欄位顯示、錯誤提示與截圖。
 
 ### Step 4：建立輸出資料夾（若不存在）
 
@@ -115,7 +130,10 @@ mkdir -p {task_dir}/test-file-script
 - API 路徑要完整（含 context-path）
 - JSON / SQL 範例用 `<pre>` 包裹，排版清楚
 - 驗證點要具體可執行，不要只寫「功能正常」
-- 截圖類（單元測試、其他測試）保留 placeholder 提示，由使用者補圖
+- 頁面操作流程可放在「功能場景」或「其他測試結果」；要包含操作入口、操作步驟、前置資料、預期結果與驗證點
+- 前後端業務互動測試應放在「功能場景」；若前端畫面無法由 Agent 實測，仍要列出前端需確認項並標記「需開發者自行測試 / 補截圖」
+- 定時任務、異步任務、導出、回調、補償腳本等非 API 驗證必須放在「其他測試結果」；無法由 Agent 代測時，要保留「需開發者自行測試 / 補截圖」提示
+- 截圖類（單元測試、其他測試、頁面操作）保留 placeholder 提示，由使用者或開發者補圖
 
 ### Step 6：儲存並回報
 
@@ -135,6 +153,8 @@ mkdir -p {task_dir}/test-file-script
 
 - **從 code 推導，不要憑空填寫**：API 路徑、錯誤碼、Response 欄位都要從 codebase 確認
 - **正向 + 異常都要有**：只有 happy path 的報告是不完整的
+- **頁面與非 API 流程不能漏**：後台頁面操作、定時任務、MQ / event、導出、回調、補償腳本等，要嘛列入測試紀錄，要嘛明確告知開發者自行測試並補結果
+- **前後端互動要串完整**：Web 系統的核心業務流程要從頁面操作一路驗到 API、DB / Redis、response、前端回顯 / 錯誤提示；不能只測後端 API 就當作業務流程完成
 - **驗證點要可執行**：測試人員看到驗證點，要能直接對照結果判斷是否通過
 - **JSON 要格式化**：Input / Output 的 JSON 要縮排排版，方便閱讀
 

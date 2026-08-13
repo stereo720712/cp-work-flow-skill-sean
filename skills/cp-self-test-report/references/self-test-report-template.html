@@ -94,17 +94,25 @@ AND status = 1;</pre>
   </tbody>
 </table>
 <h3 style="color:#3C4353;">4. 其他測試結果 (Other Test Results)</h3>
-<p>非 API 類的功能驗證（如異步任務排程、報表導出、外部系統回調等）</p>
+<p>非 API 類的功能驗證（如頁面操作流程、異步任務排程、MQ / event 消費、報表導出、外部系統回調、手動補償腳本等）。若無法由 Agent 實際執行，請明確列出需開發者自行測試的觸發方式、操作步驟、驗證點與補截圖位置。</p>
 <table class="table table-kindeditor" style="width:1106.66px;">
   <tbody>
     <tr>
       <td>
-        <p>測試情境</p>
+        <p>測試情境 / 需開發者自行測試項目</p>
+        <p>[例如：後台頁面操作路徑、定時任務觸發方式、MQ topic / consumer、導出入口、回調模擬方式]</p>
       </td>
     </tr>
     <tr>
       <td>
-        <p>測試結果截圖</p>
+        <p>操作步驟與驗證點</p>
+        <p>[例如：前置資料、操作步驟、預期 DB / Redis / API / 畫面結果、通過判定]</p>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <p>測試結果截圖 / 補充紀錄</p>
+        <p>[請貼入頁面操作、排程執行、導出結果或外部回調驗證截圖]</p>
       </td>
     </tr>
   </tbody>
