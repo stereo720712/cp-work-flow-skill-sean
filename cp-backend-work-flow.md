@@ -85,8 +85,8 @@ flowchart TD
    └── 依任務分級、affected repos、風險與待確認事項產出 task-estimation.html
 
 5. 會議前置文件
-   └── simple：需求風險與測試說明
-   └── complex：業務說明、需求風險與測試說明、上線評估
+   └── simple：開發前主管提報文件
+   └── complex：另補詳細業務流程；有上線風險時補上線評估
 
 6. 後端開發文件
    └── cp-backend-dev-doc：探索 codebase，產生 backend dev doc Markdown / HTML
@@ -122,7 +122,7 @@ flowchart TD
 | 2. Repo inventory | `cp-backend-workflow` | `cp-backend-dev-doc` 探索結果 | 沒有 `affected-repos.md`、需求變更、後端設計發現新 repo | `project-doc/affected-repos.md` |
 | 3. 任務分級與需求釐清 | `cp-backend-workflow` | `grill-me`、`karpathy-guidelines` | 需求未釐清、任務需分 simple / complex、存在假設或高風險業務行為 | simple / complex 判斷、待確認問題、確認結論 |
 | 4. 任務估時 | `cp-backend-workflow` | `grill-me` 結論、`affected-repos.md`、`karpathy-guidelines` | 任務分級與主要範圍完成後；需求變更影響範圍、風險或驗收時 | `project-doc/task-estimation.html` |
-| 5. 會議前置文件 | `cp-backend-workflow` | `grill-me` 結論、`karpathy-guidelines` | 分級完成後；complex 任務或會議前需要明確風險與測試範圍 | `requirement-risk-test-brief.md`；complex 另產 `business-brief.md`、`release-assessment.md` |
+| 5. 會議前置文件 | `cp-backend-workflow` | `grill-me` 結論、`karpathy-guidelines` | 分級完成後；開發前需要提報主管或會議前需要明確風險與測試範圍 | `pre-dev-brief.html`；complex 另產 `business-brief.html`；有上線風險時產 `release-assessment.html` |
 | 6. 後端開發文件 | `cp-backend-dev-doc` | `karpathy-guidelines`、`cp-backend-workflow` 校正 repo | 需求需要 API / DB / Redis / 業務流程設計，或既有設計需更新 | backend dev doc Markdown / HTML、校正 affected repos |
 | 7. TDD 實作與交接紀錄 | `cp-task-dev` | `karpathy-guidelines`、必要時 `grill-me` | 使用者要 Agent coding、需要 TDD、需求仍有實作前歧義 | `requirement-analysis.md`、`tdd-test-plan.md`、`dev-progress.md`、程式 / 測試改動 |
 | 8. Code Review | `cp-code-review` | `karpathy-guidelines`、`cp-task-dev` 測試紀錄 | 使用者要求 review、提測前、MR review、commit 前需要風險確認 | blocking / non-blocking / OK review 結果 |
@@ -156,9 +156,9 @@ flowchart TD
 │   ├── requirement-analysis.md
 │   ├── affected-repos.md
 │   ├── task-estimation.html
-│   ├── business-brief.md
-│   ├── requirement-risk-test-brief.md
-│   ├── release-assessment.md
+│   ├── pre-dev-brief.html
+│   ├── business-brief.html
+│   ├── release-assessment.html
 │   └── backend-dev-doc.md
 ├── test-file-script/
 │   └── tdd-test-plan.md
@@ -179,9 +179,9 @@ workflow-state.md
 requirement-changes.md
 affected-repos.md
 task-estimation.html
-business-brief.md
-requirement-risk-test-brief.md
-release-assessment.md
+pre-dev-brief.html
+business-brief.html
+release-assessment.html
 dev-progress.md
 ```
 
@@ -288,12 +288,43 @@ project-doc/task-estimation.html
 simple 任務至少維護：
 
 - `project-doc/task-estimation.html`
-- `project-doc/requirement-risk-test-brief.md`
+- `project-doc/pre-dev-brief.html`
 
 complex 任務額外維護：
 
-- `project-doc/business-brief.md`
-- `project-doc/release-assessment.md`
+- `project-doc/business-brief.html`
+
+涉及 DB、Redis、MQ、排程、回調、正式資料修復、預發正式差異或需要明確上線 / 回滾計畫時，額外維護：
+
+- `project-doc/release-assessment.html`
+
+`pre-dev-brief.html` 是開發前主管提報主文件，內容：
+
+- 需求背景：為什麼要做，現況痛點是什麼。
+- 目標方案：這次要怎麼解，預期流程會變成什麼。
+- 影響範圍：影響哪些服務、API、DB、Redis、MQ、排程、回調、前端頁面或外部系統。
+- 業務流程：主要流程、狀態流轉與前後端互動。
+- 風險與注意事項：金流、訂單狀態、權限、幣種、回調、排程、資料一致性、相容性與前後端顯示落差。
+- 測試與驗收重點：後端自測、前後端聯調、QA 必測路徑、異常路徑與回歸範圍。
+- 開發估時：引用 `task-estimation.html` 的估時摘要。
+- 待主管 / PM / QA 確認事項：會上需要確認的決策。
+- 不做範圍：本次明確不處理的功能、資料修復、相容場景或前端改動。
+
+`business-brief.html` 是 complex 任務的詳細業務流程附件，內容：
+
+- 現況流程與痛點。
+- 目標流程與角色分工。
+- 主要狀態流轉、資料流與前後端互動。
+- 邊界案例與例外處理。
+- 會議決策紀錄。
+
+`release-assessment.html` 內容：
+
+- 預發 / 正式環境差異。
+- DB / Redis / MQ / 排程 / 回調 / 初始化資料影響。
+- 上線步驟、驗證方式與回滾方式。
+- 是否需要停機、灰度、補資料或通知 QA / PM / 運維。
+- 上線後觀察指標與已知殘留風險。
 
 涉及預發 / 正式共用 DB、Redis、MQ、排程、回調或資料初始化時，預設視為 complex。
 

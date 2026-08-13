@@ -198,6 +198,18 @@ handoff/dev-progress.md
 
 本 repository 的 `skills/` 是 source。修改 skill 後，需同步到 Codex 或 Claude runtime。
 
+同步前先驗證 skill 基本格式與 Claude 安裝相容性：
+
+```bash
+scripts/validate-skills.sh
+```
+
+這個檢查會確認每個 skill 都有 `SKILL.md`、frontmatter `name` / `description`、資料夾名稱與 `name` 一致，並 dry-run Claude 安裝流程。Codex `quick_validate.py` 預設只顯示 warning；若要把 Codex 檢查也視為失敗條件：
+
+```bash
+scripts/validate-skills.sh --strict-codex
+```
+
 ```bash
 scripts/install-codex.sh
 scripts/install-claude.sh

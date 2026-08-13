@@ -124,9 +124,9 @@ flowchart TD
 - `handoff/requirement-changes.md`：需求變更紀錄與返工判斷。
 - `project-doc/affected-repos.md`：本任務受影響 repo 清單，後續 review / commit / push / MR 都以它為準。
 - `project-doc/task-estimation.html`：任務估時 HTML 表格。
-- `project-doc/business-brief.md`：大任務的業務說明 / 業務梳理文件。
-- `project-doc/requirement-risk-test-brief.md`：給 PM / 後端 / 前端 / QA 會議討論的需求、風險與測試說明。
-- `project-doc/release-assessment.md`：預發 / 正式上線評估，特別記錄 DB / Redis 影響。
+- `project-doc/pre-dev-brief.html`：開發前主管提報文件，說明需求背景、方案、影響範圍、風險、測試、估時與待決策事項。
+- `project-doc/business-brief.html`：complex 任務的詳細業務流程補充附件。
+- `project-doc/release-assessment.html`：有上線風險時才產生的預發 / 正式上線評估，特別記錄 DB / Redis 影響。
 - `end-version-report/qa-test-matrix/qa-test-matrix.md`：MR 建立後的 QA 測試矩陣報告。
 
 啟動時先執行：
@@ -279,18 +279,51 @@ HTML 表格固定欄位：
 `simple` 任務至少維護：
 
 - `project-doc/task-estimation.html`
-- `project-doc/requirement-risk-test-brief.md`
+- `project-doc/pre-dev-brief.html`
 
 `complex` 任務額外維護：
 
-- `project-doc/business-brief.md`
-- `project-doc/release-assessment.md`
+- `project-doc/business-brief.html`
 
 所有任務在 MR 建立後，若使用者需要交付 QA，才產生：
 
 - `end-version-report/qa-test-matrix/qa-test-matrix.md`
 
-需要貼禪道或會議分享時，再由 Markdown 轉成同名 HTML；HTML 內容要能直接貼入禪道富文本。
+涉及 DB、Redis、MQ、排程、回調、正式資料修復、預發正式差異或需要明確上線 / 回滾計畫時，額外維護：
+
+- `project-doc/release-assessment.html`
+
+會議前置文件直接產 HTML；HTML 內容要能直接貼入禪道富文本。
+
+### 會議前置文件內容
+
+`pre-dev-brief.html` 是 simple / complex 都要有的開發前主管提報主文件，內容先固定包含：
+
+- 需求背景：為什麼要做，現況痛點是什麼。
+- 目標方案：這次要怎麼解，預期流程會變成什麼。
+- 影響範圍：影響哪些服務、API、DB、Redis、MQ、排程、回調、前端頁面或外部系統；不確定項標 `待確認`。
+- 業務流程：用條列或流程圖說明主要流程、狀態流轉與前後端互動。
+- 風險與注意事項：整理金流、訂單狀態、權限、幣種、回調、排程、資料一致性、相容性與前後端顯示落差等風險。
+- 測試與驗收重點：列出後端自測、前後端聯調、QA 必測路徑、異常路徑與回歸範圍。
+- 開發估時：引用 `task-estimation.html` 的估時摘要。
+- 待主管 / PM / QA 確認事項：列出需要會上確認的決策。
+- 不做範圍：明確列出本次不處理的功能、資料修復、相容場景或前端改動。
+
+`business-brief.html` 只在 complex 任務產生，作為 `pre-dev-brief.html` 的詳細業務流程附件：
+
+- 現況流程與痛點。
+- 目標流程與角色分工。
+- 主要狀態流轉、資料流與前後端互動。
+- 邊界案例與例外處理。
+- 會議決策紀錄。
+
+`release-assessment.html` 只在 complex 或涉及上線風險時產生，內容聚焦上線影響：
+
+- 預發 / 正式環境差異。
+- DB / Redis / MQ / 排程 / 回調 / 初始化資料影響。
+- 上線步驟、驗證方式與回滾方式。
+- 是否需要停機、灰度、補資料或通知 QA / PM / 運維。
+- 上線後觀察指標與已知殘留風險。
 
 ## QA 測試矩陣報告
 
@@ -313,9 +346,9 @@ end-version-report/qa-test-matrix/qa-test-matrix.md
 內容來源：
 
 - 最終 MR URL、repo、branch。
-- `project-doc/requirement-risk-test-brief.md` 的風險與測試說明。
+- `project-doc/pre-dev-brief.html` 的風險與測試說明。
 - `test-file-script/` 下已完成的自測結果。
-- `project-doc/release-assessment.md` 的預發 / 正式 / DB / Redis 評估。
+- `project-doc/release-assessment.html` 的預發 / 正式 / DB / Redis 評估。
 - 實際 code diff 與 MR 描述。
 
 QA 測試矩陣必須額外整理 Web 前後端業務互動測試流程：
