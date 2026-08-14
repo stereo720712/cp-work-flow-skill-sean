@@ -104,6 +104,16 @@ mkdir -p {task_dir}/project-doc
 - 不確定的地方標示 `{待確認}` 並說明原因
 - 符合 CP 架構規範：BigDecimal 金額、userId 來自 Token、Redis key 用封裝方法
 
+### Step 5.5：產流程圖
+
+1. 先在 Markdown 文件的「流程說明」寫出 mermaid flowchart（沿用 `references/backend-dev-doc-template.md` 既有格式）。
+2. 把那段 mermaid 交給 `drawio-diagram` 轉成 `data-flow`；再依服務關係產 `architecture`。傳入 `output_dir = {task_dir}/project-doc/diagrams/`、`prefix = task-{編號}`。
+3. 在 mermaid 區塊下方加一行引用產出的 `.drawio` 檔名；有 PNG 時一併引用，方便貼 Confluence。
+
+**單向來源規則**：mermaid 是流程的來源，drawio 是產物。之後要改流程，改 mermaid 再重產 drawio，不要反向手改 drawio 再回填 mermaid。
+
+若本機沒有 draw.io desktop，`drawio-diagram` 只會產 `.drawio` 並附上自行轉 PNG 的方式，這不算失敗，繼續往下走。
+
 ### Step 6：儲存文件
 
 將兩份文件儲存到：
@@ -114,6 +124,7 @@ mkdir -p {task_dir}/project-doc
 
 儲存完成後，告知使用者：
 - 兩份文件路徑（HTML 貼禪道、Markdown 供閱讀）
+- 流程圖路徑（`.drawio` 可編輯、`.png` 可貼 Confluence）
 - 文件包含哪些主要內容
 - 哪些地方標示了 `{待確認}`，需要使用者補充
 
@@ -131,4 +142,5 @@ mkdir -p {task_dir}/project-doc
 ## 參考資料
 
 - `references/backend-dev-doc-template.html` — 開發文件 HTML 模板（inline 樣式，可直接貼進禪道）
+- `drawio-diagram` skill — 把流程說明的 mermaid 轉成可貼 Confluence 的 draw.io 圖
 - `/Users/jixiangwang/Documents/pte-work/gitlab/cp-v2/cp-backend/java-service/AGENTS.md` — 系統架構總覽

@@ -24,12 +24,17 @@ flowchart TD
     E --> F{需求是否已釐清並完成分級?}
     F -- 否 --> G[grill-me 釐清需求並判斷 simple / complex]
     F -- 是 --> TE[產 task-estimation.html 任務估時]
-    G --> TE
+    G --> FD1[drawio-diagram 產業務流程圖]
+    FD1 --> TE
     TE --> H[維護會議前置文件]
-    H --> I{需要後端設計?}
+    H --> FD3{有狀態流轉?}
+    FD3 -- 是 --> FD3A[drawio-diagram 產狀態流轉圖]
+    FD3 -- 否 --> I{需要後端設計?}
+    FD3A --> I
     I -- 是 --> J[cp-backend-dev-doc 產後端開發文件並校正 repo]
     I -- 否 --> K{需要 Agent coding?}
-    J --> K
+    J --> FD2[drawio-diagram 產資料流 + 架構圖]
+    FD2 --> K
     K -- 是 --> L[cp-task-dev 需求分析 / TDD / 實作 / dev-progress]
     K -- 否 --> M[使用者人工 coding 後補齊測試與進度紀錄]
     L --> N{是否需要 review?}
@@ -56,12 +61,16 @@ flowchart TD
     AA --> AB{需要 QA 測試矩陣?}
     AB -- 是 --> AC[產 end-version-report/qa-test-matrix/qa-test-matrix.md]
     AB -- 否 --> AD[流程完成]
-    AC --> AD
+    AC --> FD4[drawio-diagram 產測試路徑圖]
+    FD4 --> AD
 
     E -. 需求變更 .-> AE[記錄 requirement-changes.md 並標記 needs_update]
+    FD1 -. 需求變更 .-> AE
     TE -. 需求變更 .-> AE
     H -. 需求變更 .-> AE
+    FD3A -. 需求變更 .-> AE
     J -. 需求變更 .-> AE
+    FD2 -. 需求變更 .-> AE
     L -. 需求變更 .-> AE
     Y -. 需求變更 .-> AE
     AE --> D
@@ -80,6 +89,7 @@ flowchart TD
 
 3. 任務分級與需求釐清
    └── simple / complex 分級，使用 grill-me 釐清改動範圍、驗收條件、風險、測試與上線決策
+   └── drawio-diagram：釐清後產業務流程圖（泳道），供會議與 pre-dev-brief 引用
 
 4. 任務估時
    └── 依任務分級、affected repos、風險與待確認事項產出 task-estimation.html
@@ -87,11 +97,14 @@ flowchart TD
 5. 會議前置文件
    └── simple：開發前主管提報文件
    └── complex：另補詳細業務流程；有上線風險時補上線評估
+   └── drawio-diagram：涉及狀態機時產狀態流轉圖，附在 business-brief
 
 6. 後端開發文件
    └── cp-backend-dev-doc：探索 codebase，產生 backend dev doc Markdown / HTML
+   └── drawio-diagram：把流程說明的 mermaid 轉成資料流圖，另產架構圖
 
 7. TDD 實作與交接紀錄
+   └── 進 coding 前先確認分支名稱為 feature/{衝刺版號}_task-{任務編號}
    └── cp-task-dev：需求分析、TDD 測試計畫、Red -> Green -> Refactor、dev-progress
 
 8. Review / 自測報告
@@ -107,6 +120,7 @@ flowchart TD
 
 11. QA 測試矩陣報告
     └── MR 建立後，依最終需求、MR、自測與上線評估產出 QA 測試矩陣
+    └── drawio-diagram：把必測路徑畫成測試路徑圖（正常 / 異常泳道）
 
 12. 合併衝突
     └── cp-merge-conflict：分析兩側改動並提出方案，等待使用者確認後才寫入
@@ -133,6 +147,7 @@ flowchart TD
 | 13. MR 提交 | `cp-mr-submit` | Chrome / GitLab 登入狀態、`cp-mr-description` | 使用者確認 MR 描述並要求建立 MR | GitLab MR URL |
 | 14. QA 測試矩陣報告 | `cp-backend-workflow` | `cp-task-dev`、`cp-self-test-report`、`cp-mr-description` | MR 建立後，使用者需要交付 QA 測試範圍 | `end-version-report/qa-test-matrix/qa-test-matrix.md` |
 | 15. 合併衝突 | `cp-merge-conflict` | `cp-backend-workflow` 暫停後續階段 | 發生 conflict 時跑 | 衝突分析、合併建議、確認後寫入 |
+| 16. 流程圖 | `drawio-diagram` | `grill-me` 結論、`cp-backend-dev-doc`、`qa-test-matrix.md` | 需求釐清後、有狀態流轉時、後端設計後、QA 測試矩陣完成後，或使用者要求畫圖 / 要貼 Confluence | `project-doc/diagrams/*.drawio`，有 draw.io desktop 時另產 `.png` |
 
 輔助 skill 調用規則：
 
@@ -159,7 +174,13 @@ flowchart TD
 │   ├── pre-dev-brief.html
 │   ├── business-brief.html
 │   ├── release-assessment.html
-│   └── backend-dev-doc.md
+│   ├── backend-dev-doc.md
+│   └── diagrams/
+│       ├── task-{編號}-business-flow.drawio  + .png
+│       ├── task-{編號}-state-machine.drawio  + .png
+│       ├── task-{編號}-data-flow.drawio      + .png
+│       ├── task-{編號}-architecture.drawio   + .png
+│       └── task-{編號}-test-path.drawio      + .png
 ├── test-file-script/
 │   └── tdd-test-plan.md
 ├── handoff/
@@ -212,7 +233,7 @@ dev-progress.md
 
 | repo | 類型 | 路徑 | source branch | target branch | 狀態 | 備註 |
 |---|---|---|---|---|---|---|
-|  | backend / backend-base / backend-open / frontend / other |  |  | master | needs_confirm |  |
+|  | backend / backend-base / backend-open / frontend / other |  | feature/{衝刺版號}_task-{任務編號} | master | needs_confirm |  |
 ```
 
 規則：
@@ -237,6 +258,8 @@ dev-progress.md
 - complex：完整確認業務流程、角色影響、DB / Redis / MQ / 排程 / 回調 / 通知、權限 / 風控、測試範圍、上線與回滾。
 
 使用者明確說不用追問時可跳過，但必須在 `workflow-state.md` 記錄原因，並在文件中標示未確認假設。
+
+釐清完成後用 `drawio-diagram` 產 `diagrams/task-{編號}-business-flow.drawio`（角色泳道），供會議討論與 `pre-dev-brief.html` 引用。仍未定案的節點標 `{待確認}` 並用虛線，讓會上一眼看出要決策什麼。
 
 ---
 
@@ -339,7 +362,30 @@ complex 任務額外維護：
 - 產出可貼禪道的 HTML。
 - 說明 API 設計、業務邏輯流程、DB / Redis / MQ 影響、相容性與風險。
 
-後端開發文件完成後，需回頭校正 `affected-repos.md`。
+後端開發文件完成後，需回頭校正 `affected-repos.md`，並用 `drawio-diagram` 產出：
+
+- `diagrams/task-{編號}-data-flow.drawio`：由文件內的 mermaid 轉出
+- `diagrams/task-{編號}-architecture.drawio`：依服務分層與呼叫關係
+
+mermaid 是流程來源，drawio 是產物；要改流程改 mermaid 再重產。
+
+---
+
+## 分支命名
+
+開發者常同時跑多個任務，分支名稱要一眼看出「哪個衝刺、哪個任務」。格式固定：
+
+```text
+feature/{衝刺版號}_task-{任務編號}
+```
+
+例如 `feature/1_25_0_task-5987`。衝刺版號是禪道 Scrum sprint version，不是程式發版版本；修 bug 類任務可用 `fix/` 取代 `feature/`。
+
+- 多 repo 任務的每個 repo 用**同一個分支名稱**。
+- 進 coding 前逐 repo 比對目前分支；不符格式或還在 `master` 上時提醒使用者，並給建議分支名稱。
+- 缺衝刺版號時先問，不要自己編。
+- **開分支、切分支屬於外部操作**，需使用者明確要求才執行；總控預設只提醒與提供指令。
+- 確認後寫回 `affected-repos.md` 的 source branch 欄，後續 commit / push / MR 都以它為準。
 
 ---
 
@@ -428,6 +474,8 @@ QA 測試矩陣報告是 MR 建立後的收尾產物，不是開發前文件。
 end-version-report/qa-test-matrix/qa-test-matrix.md
 ```
 
+矩陣完成後用 `drawio-diagram` 產 `diagrams/task-{編號}-test-path.drawio`：lane 分「正常路徑」與「異常路徑」，異常分支用紅色節點。內容必須與矩陣一致，矩陣改了要一併重產。
+
 ---
 
 ## Step 12：合併衝突
@@ -467,6 +515,7 @@ end-version-report/qa-test-matrix/qa-test-matrix.md
 | MR 描述 | `cp-mr-description` | 產每個 repo 的 MR Markdown |
 | MR 提交 | `cp-mr-submit` | 建立 GitLab MR |
 | 合併衝突 | `cp-merge-conflict` | 分析衝突並等待確認後合併 |
+| 流程圖 | `drawio-diagram` | 產 draw.io 業務流程 / 資料流 / 架構圖，可貼 Confluence |
 | 品質閘門 | `karpathy-guidelines` | 約束假設、簡潔、精準修改與驗證標準 |
 
 Skills source 位置：`skills/`

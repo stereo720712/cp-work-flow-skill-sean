@@ -1,0 +1,183 @@
+<mxfile host="app.diagrams.net" type="device">
+  <diagram id="swimlane-flow" name="泳道流程">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="826" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="pool" value="" style="swimlane;html=1;startSize=0;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="40" y="40" width="1300" height="960" as="geometry" />
+        </mxCell>
+
+        <mxCell id="lane0" value="用戶" style="swimlane;html=1;startSize=30;fillColor=none;" vertex="1" parent="pool">
+          <mxGeometry x="0" y="0" width="260" height="960" as="geometry" />
+        </mxCell>
+        <mxCell id="lane1" value="前端" style="swimlane;html=1;startSize=30;fillColor=none;" vertex="1" parent="pool">
+          <mxGeometry x="260" y="0" width="260" height="960" as="geometry" />
+        </mxCell>
+        <mxCell id="lane2" value="後端" style="swimlane;html=1;startSize=30;fillColor=none;" vertex="1" parent="pool">
+          <mxGeometry x="520" y="0" width="260" height="960" as="geometry" />
+        </mxCell>
+        <mxCell id="lane3" value="DB" style="swimlane;html=1;startSize=30;fillColor=none;" vertex="1" parent="pool">
+          <mxGeometry x="780" y="0" width="260" height="960" as="geometry" />
+        </mxCell>
+        <mxCell id="lane4" value="外部系統" style="swimlane;html=1;startSize=30;fillColor=none;" vertex="1" parent="pool">
+          <mxGeometry x="1040" y="0" width="260" height="960" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n0" value="用戶提交補入帳申請" style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="lane0">
+          <mxGeometry x="30" y="60" width="200" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="n1" value="填寫金額與憑證，送出 API" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="lane1">
+          <mxGeometry x="30" y="160" width="200" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="n2" value="校驗訂單狀態與金額" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="lane2">
+          <mxGeometry x="30" y="260" width="200" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="n3" value="金額是否相符" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="lane2">
+          <mxGeometry x="30" y="350" width="200" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="n4" value="寫入入帳紀錄" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="lane3">
+          <mxGeometry x="30" y="460" width="200" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="n5" value="轉人工審核" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="lane2">
+          <mxGeometry x="30" y="460" width="200" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="n6" value="發送 MQ 通知商戶" style="shape=hexagon;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="lane4">
+          <mxGeometry x="30" y="560" width="200" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="n7" value="商戶回調重試次數 {待確認}" style="shape=hexagon;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;dashed=1;" vertex="1" parent="lane4">
+          <mxGeometry x="30" y="660" width="200" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="n8" value="回顯入帳成功" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="lane1">
+          <mxGeometry x="30" y="760" width="200" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="n9" value="結束" style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="lane0">
+          <mxGeometry x="30" y="860" width="200" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e0" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="pool" source="n0" target="n1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="pool" source="n1" target="n2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="pool" source="n2" target="n3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" value="是" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="pool" source="n3" target="n4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" value="否" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="pool" source="n3" target="n5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="pool" source="n4" target="n6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="pool" source="n6" target="n7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="pool" source="n6" target="n8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="pool" source="n8" target="n9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e9" value="人工處理後" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="pool" source="n5" target="n9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+
+  <diagram id="architecture" name="架構圖">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="826" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="L0" value="前端層" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;verticalAlign=top;align=left;spacingLeft=10;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="40" width="920" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="L1" value="Open 層" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;verticalAlign=top;align=left;spacingLeft=10;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="200" width="920" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="L2" value="BLL 層" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;verticalAlign=top;align=left;spacingLeft=10;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="360" width="920" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="L3" value="Base 層" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;verticalAlign=top;align=left;spacingLeft=10;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="520" width="920" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="L4" value="資料層" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;verticalAlign=top;align=left;spacingLeft=10;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="680" width="920" height="120" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c00" value="商戶後台 web" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="60" y="90" width="180" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="c01" value="運營後台 web" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="280" y="90" width="180" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="c10" value="open-one-key" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="60" y="250" width="180" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="c20" value="bll-order" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="60" y="410" width="180" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="c21" value="bll-account" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="280" y="410" width="180" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="c30" value="base-order" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="60" y="570" width="180" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="c31" value="base-account" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="280" y="570" width="180" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="c40" value="MySQL" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="60" y="730" width="180" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="c41" value="Redis" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="280" y="730" width="180" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="c42" value="RocketMQ" style="shape=hexagon;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1">
+          <mxGeometry x="500" y="730" width="180" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="a0" value="HTTP" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="c00" target="c10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a1" value="HTTP" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="c01" target="c10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a2" value="Feign" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;dashed=1;" edge="1" parent="1" source="c10" target="c20">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a3" value="Feign" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;dashed=1;" edge="1" parent="1" source="c20" target="c21">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a4" value="Feign" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;dashed=1;" edge="1" parent="1" source="c20" target="c30">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a5" value="Feign" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;dashed=1;" edge="1" parent="1" source="c21" target="c31">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="c30" target="c40">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="c31" target="c40">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="c31" target="c41">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a9" value="MQ" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=1;exitY=0.5;entryX=0.5;entryY=0;dashed=1;" edge="1" parent="1" source="c21" target="c42">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="590" y="440" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

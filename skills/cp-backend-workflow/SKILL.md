@@ -20,12 +20,17 @@ flowchart TD
     E --> F{需求是否已釐清並完成分級?}
     F -- 否 --> G[grill-me 釐清需求並判斷 simple / complex]
     F -- 是 --> TE[產 task-estimation.html 任務估時]
-    G --> TE
+    G --> FD1[drawio-diagram 產業務流程圖]
+    FD1 --> TE
     TE --> H[維護會議前置文件]
-    H --> I{需要後端設計?}
+    H --> FD3{有狀態流轉?}
+    FD3 -- 是 --> FD3A[drawio-diagram 產狀態流轉圖]
+    FD3 -- 否 --> I{需要後端設計?}
+    FD3A --> I
     I -- 是 --> J[cp-backend-dev-doc 產後端開發文件並校正 repo]
     I -- 否 --> K{需要 Agent coding?}
-    J --> K
+    J --> FD2[drawio-diagram 產資料流 + 架構圖]
+    FD2 --> K
     K -- 是 --> L[cp-task-dev 需求分析 / TDD / 實作 / dev-progress]
     K -- 否 --> M[使用者人工 coding 後補齊測試與進度紀錄]
     L --> N{是否需要 review?}
@@ -52,12 +57,16 @@ flowchart TD
     AA --> AB{需要 QA 測試矩陣?}
     AB -- 是 --> AC[產 end-version-report/qa-test-matrix/qa-test-matrix.md]
     AB -- 否 --> AD[流程完成]
-    AC --> AD
+    AC --> FD4[drawio-diagram 產測試路徑圖]
+    FD4 --> AD
 
     E -. 需求變更 .-> AE[記錄 requirement-changes.md 並標記 needs_update]
+    FD1 -. 需求變更 .-> AE
     TE -. 需求變更 .-> AE
     H -. 需求變更 .-> AE
+    FD3A -. 需求變更 .-> AE
     J -. 需求變更 .-> AE
+    FD2 -. 需求變更 .-> AE
     L -. 需求變更 .-> AE
     Y -. 需求變更 .-> AE
     AE --> D
@@ -75,10 +84,10 @@ flowchart TD
 |---|---|---|---|---|
 | 任務模板 | `cp-task-template` | `cp-backend-workflow` | 沒有任務資料夾、禪道任務描述需要建立或更新 | `task-{編號}/`、禪道主／子任務 HTML |
 | Repo inventory | `cp-backend-workflow` | `cp-backend-dev-doc` 探索結果 | 沒有 `affected-repos.md`、需求變更、後端設計發現新 repo | `project-doc/affected-repos.md` |
-| 任務分級 / 需求釐清 | `cp-backend-workflow` | `grill-me`、`karpathy-guidelines` | 需求未釐清、任務需分 simple / complex、存在假設或高風險業務行為 | 任務規模判斷、確認結論、待確認問題 |
+| 任務分級 / 需求釐清 | `cp-backend-workflow` | `grill-me`、`drawio-diagram`、`karpathy-guidelines` | 需求未釐清、任務需分 simple / complex、存在假設或高風險業務行為 | 任務規模判斷、確認結論、待確認問題、業務流程圖 |
 | 任務估時 | `cp-backend-workflow` | `grill-me` 結論、`affected-repos.md`、`karpathy-guidelines` | 任務分級與主要範圍完成後；需求變更影響範圍、風險或驗收時 | `project-doc/task-estimation.html` |
-| 業務 / 風險 / 測試說明 | `cp-backend-workflow` | `grill-me` 結論、`karpathy-guidelines` | 分級完成後；complex 任務或會議前需要明確風險與測試範圍 | 業務說明、需求風險與測試說明、上線評估 |
-| 後端設計 | `cp-backend-dev-doc` | `karpathy-guidelines`、`cp-backend-workflow` 校正 repo | 需求需要 API / DB / Redis / 業務流程設計，或既有設計需更新 | backend dev doc HTML／Markdown、校正 `affected-repos.md` |
+| 業務 / 風險 / 測試說明 | `cp-backend-workflow` | `grill-me` 結論、`drawio-diagram`、`karpathy-guidelines` | 分級完成後；complex 任務或會議前需要明確風險與測試範圍 | 業務說明、需求風險與測試說明、上線評估、狀態流轉圖 |
+| 後端設計 | `cp-backend-dev-doc` | `karpathy-guidelines`、`drawio-diagram`、`cp-backend-workflow` 校正 repo | 需求需要 API / DB / Redis / 業務流程設計，或既有設計需更新 | backend dev doc HTML／Markdown、資料流與架構圖、校正 `affected-repos.md` |
 | TDD 實作 | `cp-task-dev` | `karpathy-guidelines`、必要時 `grill-me` | 使用者要 Agent coding、需要 TDD、需求仍有實作前歧義 | 需求分析、TDD 測試計畫、開發進度與交接紀錄 |
 | Review | `cp-code-review` | `karpathy-guidelines`、`cp-task-dev` 測試紀錄 | 使用者要求 review、提測前、MR review、commit 前需要風險確認 | blocking / non-blocking / OK review 結果 |
 | 自測 | `cp-self-test-report` | `cp-task-dev` 測試紀錄、`cp-code-review` 結果 | 使用者要求自測報告、任務明確需要後端自測交付 | 後端自測報告（可選） |
@@ -86,8 +95,9 @@ flowchart TD
 | Push | `cp-backend-workflow` | 無專用 skill | 使用者明確要求 push，且每個 repo 已 commit | 每個 repo 各自 push |
 | MR 描述 | `cp-mr-description` | `affected-repos.md`、`cp-task-dev`、`cp-self-test-report`、`cp-code-review` | 使用者要開 MR 或產 MR 描述，且 repo 範圍已確認 | 每個 repo 一份 MR Markdown |
 | MR 提交 | `cp-mr-submit` | Chrome / GitLab 登入狀態、`cp-mr-description` | 使用者確認 MR 描述並要求建立 MR | GitLab MR、Assignee、merge options、MR URL |
-| QA 測試矩陣報告 | `cp-backend-workflow` | `cp-task-dev`、`cp-self-test-report`、`cp-mr-description` | MR 建立後，使用者需要交付 QA 測試範圍 | MR 後 QA 測試矩陣報告 |
+| QA 測試矩陣報告 | `cp-backend-workflow` | `cp-task-dev`、`cp-self-test-report`、`cp-mr-description`、`drawio-diagram` | MR 建立後，使用者需要交付 QA 測試範圍 | MR 後 QA 測試矩陣報告、測試路徑圖 |
 | 衝突 | `cp-merge-conflict` | `cp-backend-workflow` 暫停後續階段 | merge / rebase / pull 出現 conflict | 衝突分析與合併建議，使用者確認後才寫入 |
+| 流程圖 | `drawio-diagram` | `grill-me` 結論、`cp-backend-dev-doc`、`qa-test-matrix.md` | 需求釐清後產業務流程圖；有狀態流轉時產狀態流轉圖；後端設計後產資料流與架構圖；QA 測試矩陣完成後產測試路徑圖；或使用者要求畫圖 / 要貼 Confluence | `project-doc/diagrams/*.drawio`（有 draw.io desktop 時另產 `.png`） |
 
 輔助 skill 調用規則：
 
@@ -96,6 +106,7 @@ flowchart TD
 - `cp-task-dev` 的測試紀錄是 review、自測報告、MR 描述與 QA 測試矩陣的主要輸入之一。
 - `cp-code-review` 的結果可回饋到 `cp-task-dev` 修正，也可作為 commit / MR 前的風險依據。
 - `cp-backend-dev-doc` 完成後必須回饋 `affected-repos.md`，避免後續 review / commit / MR 範圍過期。
+- `drawio-diagram` 只畫圖，不決定需求；圖的內容以 `pre-dev-brief.html` 與後端開發文件為準，圖與文字不一致時以文字為準。開發文件內已有 mermaid 時，mermaid 是來源、drawio 是產物，要改流程先改 mermaid 再重產。
 
 ## 啟動時收集
 
@@ -104,7 +115,7 @@ flowchart TD
 - 禪道／CP 任務編號與任務 URL 或內容。
 - 禪道衝刺版號（Scrum sprint version），例如 `1_25_0`。
 - 任務文件根目錄 `task_root` 與完整任務目錄 `task_dir`。若使用者未提供，先詢問要放哪裡；可建議預設 `{repo}/task-doc/{衝刺版號}/` 或 `/Users/jixiangwang/Documents/pte-work/gitlab/cp-v2/cp-backend/task-doc/{衝刺版號}/`，但不得未確認就建立。
-- 受影響 repo、目前分支與目標分支（預設 `master`）。
+- 受影響 repo、目前分支與目標分支（預設 `master`）；source branch 依「分支命名」節的 `feature/{衝刺版號}_task-{任務編號}` 格式確認。
 - 任務規模：`simple` / `complex`；若不明，先依影響範圍判斷。
 - 任務估時是否要貼禪道、是否要拆前端 / 後端 / QA / PM 溝通成本。
 - 是否需要跨 PM / 後端 / 前端 / QA 會議討論。
@@ -127,6 +138,7 @@ flowchart TD
 - `project-doc/pre-dev-brief.html`：開發前主管提報文件，說明需求背景、方案、影響範圍、風險、測試、估時與待決策事項。
 - `project-doc/business-brief.html`：complex 任務的詳細業務流程補充附件。
 - `project-doc/release-assessment.html`：有上線風險時才產生的預發 / 正式上線評估，特別記錄 DB / Redis 影響。
+- `project-doc/diagrams/`：本任務的 draw.io 流程圖與 PNG，由 `drawio-diagram` 產生。
 - `end-version-report/qa-test-matrix/qa-test-matrix.md`：MR 建立後的 QA 測試矩陣報告。
 
 啟動時先執行：
@@ -175,7 +187,11 @@ flowchart TD
 
 - API input / output 變更：後端開發文件、coding、review、自測報告、MR 描述標記 `needs_update`。
 - DB schema / Redis 變更：後端開發文件、coding、review、自測報告、MR 描述標記 `needs_update`。
-- 業務規則變更：後端開發文件、coding、review、自測報告、MR 描述標記 `needs_update`。
+- 業務規則變更：後端開發文件、coding、review、自測報告、MR 描述標記 `needs_update`；`diagrams/` 的 `business-flow` 一併標記。
+- API / DB / Redis 變更影響資料流或分層：`diagrams/` 的 `data-flow`、`architecture` 標記 `needs_update`。
+- 狀態機、狀態流轉或觸發事件變更：`diagrams/` 的 `state-machine` 標記 `needs_update`。
+- 測試範圍、必測路徑或異常路徑變更：`diagrams/` 的 `test-path` 標記 `needs_update`，與 `qa-test-matrix.md` 一起重產。
+- 開發文件內的 mermaid 與對應 drawio 一律同時標記 `needs_update`，且先改 mermaid 再重產 drawio。
 - 影響 repo 範圍、實作策略、驗收條件、風險或交付時間：任務估時標記 `needs_update`。
 - 前後端業務互動流程變更，例如頁面入口、操作步驟、前端 request / response 處理、錯誤提示、角色權限：需求風險與測試說明、自測報告、MR 描述、QA 測試矩陣報告標記 `needs_update`；若影響 API 或前後端實作，再標記後端開發文件與 coding。
 - 只改禪道文字描述：任務模板或 MR 描述標記 `needs_update`。
@@ -184,7 +200,7 @@ flowchart TD
 - 上線策略、DB / Redis / 預發正式共用資源評估變更：上線評估、自測報告、MR 描述標記 `needs_update`；若影響程式或資料腳本，再標記 coding。
 - MR 建立後又變更需求、測試失敗或調整上線策略：QA 測試矩陣報告標記 `needs_update`，待 MR / 文件重新定案後再重產。
 - MR 已建立後才變更需求：不自動重開 MR，只標記 MR 需要更新並等待使用者確認。
-- 需求新增或移除服務 / repo：`affected-repos.md` 標記 `needs_update`，並重新判斷 review、commit、push、MR 範圍。
+- 需求新增或移除服務 / repo：`affected-repos.md` 標記 `needs_update`，並重新判斷 review、commit、push、MR 範圍；`diagrams/` 的 `architecture` 一併標記。
 
 ## 任務分級與 grill-me 導入
 
@@ -280,10 +296,17 @@ HTML 表格固定欄位：
 
 - `project-doc/task-estimation.html`
 - `project-doc/pre-dev-brief.html`
+- `project-doc/diagrams/{task_id}-business-flow.drawio`
 
 `complex` 任務額外維護：
 
 - `project-doc/business-brief.html`
+- `project-doc/diagrams/{task_id}-data-flow.drawio`
+- `project-doc/diagrams/{task_id}-architecture.drawio`
+
+涉及訂單、工單、審核或任何狀態機時，額外維護：
+
+- `project-doc/diagrams/{task_id}-state-machine.drawio`
 
 所有任務在 MR 建立後，若使用者需要交付 QA，才產生：
 
@@ -302,7 +325,7 @@ HTML 表格固定欄位：
 - 需求背景：為什麼要做，現況痛點是什麼。
 - 目標方案：這次要怎麼解，預期流程會變成什麼。
 - 影響範圍：影響哪些服務、API、DB、Redis、MQ、排程、回調、前端頁面或外部系統；不確定項標 `待確認`。
-- 業務流程：用條列或流程圖說明主要流程、狀態流轉與前後端互動。
+- 業務流程：用條列或流程圖說明主要流程、狀態流轉與前後端互動；附上 `diagrams/` 下對應的 `.drawio` 檔名，有 PNG 時一併引用。
 - 風險與注意事項：整理金流、訂單狀態、權限、幣種、回調、排程、資料一致性、相容性與前後端顯示落差等風險。
 - 測試與驗收重點：列出後端自測、前後端聯調、QA 必測路徑、異常路徑與回歸範圍。
 - 開發估時：引用 `task-estimation.html` 的估時摘要。
@@ -313,7 +336,7 @@ HTML 表格固定欄位：
 
 - 現況流程與痛點。
 - 目標流程與角色分工。
-- 主要狀態流轉、資料流與前後端互動。
+- 主要狀態流轉、資料流與前後端互動；有狀態機時附上 `diagrams/{task_id}-state-machine.drawio`，節點是狀態、邊是觸發事件。
 - 邊界案例與例外處理。
 - 會議決策紀錄。
 
@@ -360,6 +383,8 @@ QA 測試矩陣必須額外整理 Web 前後端業務互動測試流程：
 - 前端成功回顯、錯誤提示、列表刷新、狀態變更或導出結果。
 - 無法由 Agent 實測的頁面互動，要列為 QA / 開發者需補測與補截圖項目。
 
+矩陣寫完後，用 `drawio-diagram` 產 `diagrams/{task_id}-test-path.drawio`：lane 分「正常路徑」與「異常路徑」，把矩陣裡的必測路徑畫成流程，異常分支用紅色節點。這張圖是給 QA 看的交接圖，內容必須與 `qa-test-matrix.md` 一致；矩陣改了要一併重產。
+
 ## Repo Inventory
 
 總控必須維護 `project-doc/affected-repos.md` 作為任務 repo 名冊。後續 review、commit、push、MR 描述與 MR 提交都以這份清單為準，不要每個子 skill 重新猜 repo 範圍。
@@ -378,8 +403,10 @@ QA 測試矩陣必須額外整理 Web 前後端業務互動測試流程：
 
 | repo | 類型 | 路徑 | source branch | target branch | 狀態 | 備註 |
 |---|---|---|---|---|---|---|
-|  | backend / backend-base / backend-open / frontend / other |  |  | master | needs_confirm |  |
+|  | backend / backend-base / backend-open / frontend / other |  | feature/{衝刺版號}_task-{任務編號} | master | needs_confirm |  |
 ```
+
+source branch 一律填「分支命名」節的格式；尚未開分支時照樣先填預期名稱，並在備註標 `未建立`。
 
 Repo 狀態只使用：
 
@@ -403,26 +430,60 @@ Repo 狀態只使用：
 - `workflow-state.md` 的 Repo 狀態要與 `affected-repos.md` 同步；若兩者不一致，以 `affected-repos.md` 作為任務範圍，以 git 現況作為實際進度。
 - 後續 review / commit / push / MR 只處理狀態不是 `not_required` 的 repo；`needs_confirm` 必須先確認，不可直接提交或建立 MR。
 
+## 分支命名
+
+開發者常同時跑多個任務，分支名稱必須一眼看出「哪個衝刺、哪個任務」。
+
+格式固定：
+
+```text
+feature/{衝刺版號}_task-{任務編號}
+```
+
+範例：
+
+```text
+feature/1_25_0_task-5987
+```
+
+- `{衝刺版號}` 是禪道 Scrum sprint version，例如 `1_25_0`，不是程式發版版本。
+- `{任務編號}` 是禪道任務編號，與 `task_dir` 的 `task-{編號}` 一致。
+- 修 bug 類任務可用 `fix/` 取代 `feature/`，其餘格式不變。
+- 多 repo 任務的每個 repo 都用**同一個分支名稱**，方便對照與開 MR。
+
+進入 coding 前必須檢查：
+
+1. 讀 `affected-repos.md`，取得每個要處理 repo 的 source branch。
+2. 對每個 repo 執行 `git branch --show-current`，比對是否符合上述格式。
+3. **不符合或還在 `master` / `develop` 上時，提醒使用者**：目前在哪個分支、依任務資訊建議的分支名稱是什麼、有哪些 repo 需要開分支。
+4. 缺少衝刺版號時先問使用者，不要自己編一個版號。
+
+**建立或切換分支屬於外部操作，必須使用者明確要求才執行**；總控預設只提醒與提供建議指令，不自行 `git checkout -b`。
+
+分支名稱確認後寫回 `affected-repos.md` 的 source branch 欄，後續 commit、push、MR 都以它為準。
+
 ## 階段判斷
 
 依序檢查工作區與文件狀態：
 
 1. 沒有任務資料夾：使用 `cp-task-template` 建立標準骨架與任務文件。
 2. 沒有 `project-doc/affected-repos.md` 或其狀態為 `needs_update`：建立或更新 repo inventory。
-3. 尚未任務分級或文件缺失：判斷 `simple` / `complex`；使用 `grill-me` 釐清後，simple 產需求風險與測試說明，complex 另產業務說明與上線評估。
+3. 尚未任務分級或文件缺失：判斷 `simple` / `complex`；使用 `grill-me` 釐清後，simple 產需求風險與測試說明，complex 另產業務說明與上線評估。需求釐清完成後，用 `drawio-diagram` 產 `business-flow` 業務流程圖，供會議與 `pre-dev-brief.html` 引用；任務涉及狀態機時另產 `state-machine`，附在 `business-brief.html`。
 4. 沒有 `project-doc/task-estimation.html` 或其狀態為 `needs_update`：依任務分級、repo 範圍、風險與待確認事項產生或更新估時 HTML 表格。
-5. 沒有後端開發文件且需求需要設計：使用 `cp-backend-dev-doc`；完成後校正 `affected-repos.md`。
-6. 仍未 coding：若使用者希望 Agent 協助實作，使用 `cp-task-dev` 先完成需求分析與 TDD 計畫，再進入實作；若由使用者人工 coding，仍要求以同一組文件記錄測試與進度，不假設程式已修改。
-7. 有未提交程式變更：先確認 `cp-task-dev` 的 `dev-progress.md` 與測試紀錄已更新，再依 `affected-repos.md` 範圍執行 `cp-code-review`（使用者要求時），再用 `commit`；保留不相關變更，不自動加入。
-8. 分支未 push：依 `affected-repos.md` 範圍在使用者明確要求時執行 push；網路受限時申請授權，不重複執行已成功的 push。
-9. 自測報告：只有使用者要求或任務明確要求時使用 `cp-self-test-report`；使用者說「不用自測／不寫自測報告」時跳過，並在後續 MR 描述標記為不產出。
-10. 要開 MR：依 `affected-repos.md` 範圍先使用 `cp-mr-description` 產生每個 repo 的 Markdown，再由使用者確認內容後使用 `cp-mr-submit` 實際建立 MR。
-11. MR 建立完成後：若需要交付 QA，依最終 MR、需求風險與測試說明、自測報告、上線評估產生 `end-version-report/qa-test-matrix/qa-test-matrix.md`。
-12. 發生 merge conflict：停止後續提交，使用 `cp-merge-conflict` 分析，等待使用者確認合併方案。
+5. 沒有後端開發文件且需求需要設計：使用 `cp-backend-dev-doc`；完成後校正 `affected-repos.md`，並用 `drawio-diagram` 產 `data-flow` 與 `architecture`。
+6. 進入 coding 前：依「分支命名」節檢查每個要處理 repo 的目前分支；不符 `feature/{衝刺版號}_task-{任務編號}` 或仍在 `master` 上時，先提醒使用者並給建議分支名稱，等使用者確認或自行開分支後再往下。
+7. 仍未 coding：若使用者希望 Agent 協助實作，使用 `cp-task-dev` 先完成需求分析與 TDD 計畫，再進入實作；若由使用者人工 coding，仍要求以同一組文件記錄測試與進度，不假設程式已修改。
+8. 有未提交程式變更：先確認 `cp-task-dev` 的 `dev-progress.md` 與測試紀錄已更新，再依 `affected-repos.md` 範圍執行 `cp-code-review`（使用者要求時），再用 `commit`；保留不相關變更，不自動加入。
+9. 分支未 push：依 `affected-repos.md` 範圍在使用者明確要求時執行 push；網路受限時申請授權，不重複執行已成功的 push。
+10. 自測報告：只有使用者要求或任務明確要求時使用 `cp-self-test-report`；使用者說「不用自測／不寫自測報告」時跳過，並在後續 MR 描述標記為不產出。
+11. 要開 MR：依 `affected-repos.md` 範圍先使用 `cp-mr-description` 產生每個 repo 的 Markdown，再由使用者確認內容後使用 `cp-mr-submit` 實際建立 MR。
+12. MR 建立完成後：若需要交付 QA，依最終 MR、需求風險與測試說明、自測報告、上線評估產生 `end-version-report/qa-test-matrix/qa-test-matrix.md`，再用 `drawio-diagram` 產 `test-path` 測試路徑圖。
+13. 發生 merge conflict：停止後續提交，使用 `cp-merge-conflict` 分析，等待使用者確認合併方案。
 
 ## 多 repo 任務規則
 
 - 每個 repo 都是獨立 Git root，分別檢查 branch、status、commit、push 與 MR。
+- 每個 repo 用同一個 `feature/{衝刺版號}_task-{任務編號}` 分支名稱，不要各 repo 取不同名字。
 - 不把不同 repo 的變更混在同一次 commit 或 MR。
 - 任務文件一律放在已確認的 `task_dir` 之下；預設格式可以是 `{task_root}/task-{編號}/...`，但 `task_root` 必須先確認。這裡的衝刺版號是禪道 Scrum sprint version，不是程式發版版本。
 - MR 文件放在：`{task_dir}/end-version-report/mr-description/mr-description-{服務名}.md`。
@@ -437,6 +498,11 @@ Repo 狀態只使用：
 - `sprint_version`：禪道衝刺版號，例如 `1_25_0`。
 - `task_root`：已確認的任務文件根目錄，例如 `task-doc/1_25_0` 或其他使用者指定路徑。
 - `task_dir`：完整任務資料夾，例如 `{task_root}/task-5987`。
+
+呼叫 `drawio-diagram` 時另外傳：
+
+- `output_dir`：`{task_dir}/project-doc/diagrams/`
+- `prefix`：`task-{編號}`
 
 子 skill 收到 `task_dir` 時，必須優先使用該路徑讀寫文件，不得自行退回舊路徑 `task-doc/task-{編號}` 或任何寫死的絕對路徑。若缺少 `task_dir`，先向使用者確認 `task_root`，再組出 `task_dir`。
 
