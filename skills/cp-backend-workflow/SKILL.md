@@ -86,7 +86,7 @@ flowchart TD
 | Repo inventory | `cp-backend-workflow` | `cp-backend-dev-doc` 探索結果 | 沒有 `affected-repos.md`、需求變更、後端設計發現新 repo | `project-doc/affected-repos.md` |
 | 任務分級 / 需求釐清 | `cp-backend-workflow` | `grill-me`、`drawio-diagram`、`karpathy-guidelines` | 需求未釐清、任務需分 simple / complex、存在假設或高風險業務行為 | 任務規模判斷、確認結論、待確認問題、業務流程圖 |
 | 任務估時 | `cp-backend-workflow` | `grill-me` 結論、`affected-repos.md`、`karpathy-guidelines` | 任務分級與主要範圍完成後；需求變更影響範圍、風險或驗收時 | `project-doc/task-estimation.html` |
-| 業務 / 風險 / 測試說明 | `cp-backend-workflow` | `grill-me` 結論、`drawio-diagram`、`karpathy-guidelines` | 分級完成後；complex 任務或會議前需要明確風險與測試範圍 | 業務說明、需求風險與測試說明、上線評估、狀態流轉圖 |
+| 會議前置文件 | `cp-backend-workflow` | `grill-me` 結論、`drawio-diagram`、`karpathy-guidelines` | 分級完成後；開發前需要提報主管或會議前需要明確風險與測試範圍 | `task-estimation.html`、`pre-dev-brief.html`、`business-brief.html`、`release-assessment.html`、狀態流轉圖 |
 | 後端設計 | `cp-backend-dev-doc` | `karpathy-guidelines`、`drawio-diagram`、`cp-backend-workflow` 校正 repo | 需求需要 API / DB / Redis / 業務流程設計，或既有設計需更新 | backend dev doc HTML／Markdown、資料流與架構圖、校正 `affected-repos.md` |
 | TDD 實作 | `cp-task-dev` | `karpathy-guidelines`、必要時 `grill-me` | 使用者要 Agent coding、需要 TDD、需求仍有實作前歧義 | 需求分析、TDD 測試計畫、開發進度與交接紀錄 |
 | Review | `cp-code-review` | `karpathy-guidelines`、`cp-task-dev` 測試紀錄 | 使用者要求 review、提測前、MR review、commit 前需要風險確認 | blocking / non-blocking / OK review 結果 |
@@ -193,11 +193,11 @@ flowchart TD
 - 測試範圍、必測路徑或異常路徑變更：`diagrams/` 的 `test-path` 標記 `needs_update`，與 `qa-test-matrix.md` 一起重產。
 - 開發文件內的 mermaid 與對應 drawio 一律同時標記 `needs_update`，且先改 mermaid 再重產 drawio。
 - 影響 repo 範圍、實作策略、驗收條件、風險或交付時間：任務估時標記 `needs_update`。
-- 前後端業務互動流程變更，例如頁面入口、操作步驟、前端 request / response 處理、錯誤提示、角色權限：需求風險與測試說明、自測報告、MR 描述、QA 測試矩陣報告標記 `needs_update`；若影響 API 或前後端實作，再標記後端開發文件與 coding。
+- 前後端業務互動流程變更，例如頁面入口、操作步驟、前端 request / response 處理、錯誤提示、角色權限：`pre-dev-brief.html`、自測報告、MR 描述、QA 測試矩陣報告標記 `needs_update`；若影響 API 或前後端實作，再標記後端開發文件與 coding。
 - 只改禪道文字描述：任務模板或 MR 描述標記 `needs_update`。
 - 只補測試說明：自測報告標記 `needs_update`。
-- 會議後調整業務流程、風險或測試範圍：業務說明、需求風險與測試說明標記 `needs_update`；若影響實作，再標記後端開發文件與 coding。
-- 上線策略、DB / Redis / 預發正式共用資源評估變更：上線評估、自測報告、MR 描述標記 `needs_update`；若影響程式或資料腳本，再標記 coding。
+- 會議後調整業務流程、風險或測試範圍：`pre-dev-brief.html` 標記 `needs_update`；complex 任務同步更新 `business-brief.html`，若涉及上線策略則更新 `release-assessment.html`；若影響實作，再標記後端開發文件與 coding。
+- 上線策略、DB / Redis / 預發正式共用資源評估變更：`release-assessment.html`、自測報告、MR 描述標記 `needs_update`；若影響程式或資料腳本，再標記 coding。
 - MR 建立後又變更需求、測試失敗或調整上線策略：QA 測試矩陣報告標記 `needs_update`，待 MR / 文件重新定案後再重產。
 - MR 已建立後才變更需求：不自動重開 MR，只標記 MR 需要更新並等待使用者確認。
 - 需求新增或移除服務 / repo：`affected-repos.md` 標記 `needs_update`，並重新判斷 review、commit、push、MR 範圍；`diagrams/` 的 `architecture` 一併標記。
@@ -236,11 +236,11 @@ flowchart TD
 - `simple` 任務：使用輕量 grill，只確認改動範圍、驗收條件、主要風險、測試重點與不做事項；通常 1~3 題即可。
 - `complex` 任務：使用完整 grill，逐題確認業務流程、角色影響、DB / Redis / MQ / 排程 / 回調 / 通知、權限 / 風控、測試範圍、上線與回滾。
 - 使用者明確說「用 grill-me 分析 / grill 一下需求」：直接啟動，不再重複確認。
-- 使用者明確說不用追問：可跳過，但要在 `workflow-state.md` 記錄 `grill_me: skipped` 與原因；此時仍需在需求風險與測試說明中標示未經 grill 確認的假設。
+- 使用者明確說不用追問：可跳過，但要在 `workflow-state.md` 記錄 `grill_me: skipped` 與原因；此時仍需在 `pre-dev-brief.html` 中標示未經 grill 確認的假設。
 
 本 workflow repo 自帶 `skills/grill-me/`。若 runtime 尚未安裝該 skill，使用本 repo 的 `skills/grill-me/SKILL.md` 規則執行同等流程，不依賴外部 `grilling` skill。
 
-`grill-me` 只負責逐題釐清決策，不直接改文件；確認結論後，總控再更新需求風險與測試說明；若為 `complex`，再更新業務說明與上線評估。QA 測試矩陣報告是 MR 建立後的收尾產物，不在此階段生成。
+`grill-me` 只負責逐題釐清決策，不直接改文件；確認結論後，總控再產出或更新 `pre-dev-brief.html`；若為 `complex`，再產出或更新 `business-brief.html`，有上線風險時產出或更新 `release-assessment.html`。QA 測試矩陣報告是 MR 建立後的收尾產物，不在此階段生成。
 
 ## 任務估時
 
@@ -356,7 +356,7 @@ QA 測試矩陣報告是 MR 建立後的收尾產物，不是開發前輸入文�
 
 - `affected-repos.md` 中需要處理的 repo 已建立 MR，狀態為 `mr_created`。
 - 不存在 `needs_update`、`blocked`、`needs_confirm` 的必要 repo。
-- MR 描述、自測報告、需求風險與測試說明、上線評估都是最新狀態。
+- MR 描述、自測報告、`pre-dev-brief.html`、`release-assessment.html` 都是最新狀態。
 
 若任一條件不成立，不產生正式 QA 測試矩陣報告；先回報缺少哪個前置階段。
 
@@ -468,7 +468,7 @@ feature/1_25_0_task-5987
 
 1. 沒有任務資料夾：使用 `cp-task-template` 建立標準骨架與任務文件。
 2. 沒有 `project-doc/affected-repos.md` 或其狀態為 `needs_update`：建立或更新 repo inventory。
-3. 尚未任務分級或文件缺失：判斷 `simple` / `complex`；使用 `grill-me` 釐清後，simple 產需求風險與測試說明，complex 另產業務說明與上線評估。需求釐清完成後，用 `drawio-diagram` 產 `business-flow` 業務流程圖，供會議與 `pre-dev-brief.html` 引用；任務涉及狀態機時另產 `state-machine`，附在 `business-brief.html`。
+3. 尚未任務分級或文件缺失：判斷 `simple` / `complex`；使用 `grill-me` 釐清後，所有任務產 `pre-dev-brief.html`，complex 另產 `business-brief.html`，有上線風險時產 `release-assessment.html`。需求釐清完成後，用 `drawio-diagram` 產 `business-flow` 業務流程圖，供會議與 `pre-dev-brief.html` 引用；任務涉及狀態機時另產 `state-machine`，附在 `business-brief.html`。
 4. 沒有 `project-doc/task-estimation.html` 或其狀態為 `needs_update`：依任務分級、repo 範圍、風險與待確認事項產生或更新估時 HTML 表格。
 5. 沒有後端開發文件且需求需要設計：使用 `cp-backend-dev-doc`；完成後校正 `affected-repos.md`，並用 `drawio-diagram` 產 `data-flow` 與 `architecture`。
 6. 進入 coding 前：依「分支命名」節檢查每個要處理 repo 的目前分支；不符 `feature/{衝刺版號}_task-{任務編號}` 或仍在 `master` 上時，先提醒使用者並給建議分支名稱，等使用者確認或自行開分支後再往下。
@@ -477,7 +477,7 @@ feature/1_25_0_task-5987
 9. 分支未 push：依 `affected-repos.md` 範圍在使用者明確要求時執行 push；網路受限時申請授權，不重複執行已成功的 push。
 10. 自測報告：只有使用者要求或任務明確要求時使用 `cp-self-test-report`；使用者說「不用自測／不寫自測報告」時跳過，並在後續 MR 描述標記為不產出。
 11. 要開 MR：依 `affected-repos.md` 範圍先使用 `cp-mr-description` 產生每個 repo 的 Markdown，再由使用者確認內容後使用 `cp-mr-submit` 實際建立 MR。
-12. MR 建立完成後：若需要交付 QA，依最終 MR、需求風險與測試說明、自測報告、上線評估產生 `end-version-report/qa-test-matrix/qa-test-matrix.md`，再用 `drawio-diagram` 產 `test-path` 測試路徑圖。
+12. MR 建立完成後：若需要交付 QA，依最終 MR、`pre-dev-brief.html`、自測報告、`release-assessment.html` 產生 `end-version-report/qa-test-matrix/qa-test-matrix.md`，再用 `drawio-diagram` 產 `test-path` 測試路徑圖。
 13. 發生 merge conflict：停止後續提交，使用 `cp-merge-conflict` 分析，等待使用者確認合併方案。
 
 ## 多 repo 任務規則

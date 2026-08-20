@@ -30,9 +30,10 @@
 | 主任務描述 | project-doc/ | pending |
 | 後端子任務描述 | project-doc/ | pending |
 | 前端子任務描述 | project-doc/ | pending |
-| 業務說明 | project-doc/business-brief.md | pending |
-| 需求風險與測試說明 | project-doc/requirement-risk-test-brief.md | pending |
-| 上線評估 | project-doc/release-assessment.md | pending |
+| 任務估時 | project-doc/task-estimation.html | pending |
+| 開發前提報文件 | project-doc/pre-dev-brief.html | pending |
+| 業務說明（complex 才產） | project-doc/business-brief.html | pending |
+| 上線評估（有上線風險才產） | project-doc/release-assessment.html | pending |
 | 後端開發文件 | project-doc/ | pending |
 | 自測報告 | test-file-script/ | pending |
 | MR 描述 | end-version-report/mr-description/ | pending |

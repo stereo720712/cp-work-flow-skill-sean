@@ -38,9 +38,9 @@ description: >
 
 若已有 `task_dir`，先讀取以下文件作為設計輸入；文件不存在時不要自行捏造內容，改以 `{待確認}` 標示或回報需先補齊：
 
-- `{task_dir}/project-doc/business-brief.md`：大任務的業務流程與角色影響。
-- `{task_dir}/project-doc/requirement-risk-test-brief.md`：PM / 後端 / 前端 / QA 會議確認過的改動、風險與測試說明。
-- `{task_dir}/project-doc/release-assessment.md`：預發 / 正式上線評估，尤其 DB / Redis 共用資源影響。
+- `{task_dir}/project-doc/pre-dev-brief.html`：開發前提報主文件，需求背景、方案、影響範圍、風險與測試重點。
+- `{task_dir}/project-doc/business-brief.html`：complex 任務的詳細業務流程與角色影響。
+- `{task_dir}/project-doc/release-assessment.html`：預發 / 正式上線評估，尤其 DB / Redis 共用資源影響。
 
 ### Step 2：探索 Codebase
 

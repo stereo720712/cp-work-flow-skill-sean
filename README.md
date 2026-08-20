@@ -6,7 +6,7 @@
 ## 目錄
 
 - `skills/` — 各階段 skill（安裝到 `~/.codex/skills/` 或 `~/.claude/skills/` 使用，此處為 source）
-- `cp-task-folder-template/` — 任務資料夾範本
+- `skills/cp-task-template/references/task-folder-template/` — 任務資料夾範本（單一來源）
 
 本 repo 自帶 `skills/grill-me/`，供 `cp-backend-workflow` 在任務分級後進行需求釐清；simple 任務使用輕量 grill，complex 任務使用完整 grill，不需要依賴外部 `grilling` skill 或個人 symlink。
 
@@ -28,8 +28,8 @@ flowchart TD
     B --> C["任務分級<br/>simple / complex"]
     C -->|simple| D["grill-me<br/>輕量需求釐清"]
     C -->|complex 或需求不清| E["grill-me<br/>完整需求釐清"]
-    D --> F["需求風險與測試說明"]
-    E --> G["業務說明 / 風險測試 / 上線評估"]
+    D --> F["pre-dev-brief.html"]
+    E --> G["business-brief.html / release-assessment.html"]
     F --> H["cp-backend-dev-doc<br/>後端開發文件"]
     G --> H
     H --> I["cp-task-dev<br/>TDD 實作與進度紀錄"]
@@ -46,7 +46,7 @@ flowchart TD
 1. `cp-task-template`：建立禪道主任務、前／後端子任務與任務資料夾。
 2. Repo inventory：建立 `project-doc/affected-repos.md`，確認實際受影響的 repo。
 3. 任務分級與需求釐清：判斷 `simple` / `complex`，並使用 `grill-me` 逐題確認；simple 使用輕量 grill，complex 使用完整 grill。
-4. 會議前置文件：產出業務說明、需求風險與測試說明、上線評估。
+4. 會議前置文件：產出 `task-estimation.html`、`pre-dev-brief.html`；complex 任務另產 `business-brief.html`，有上線風險時產 `release-assessment.html`。
 5. `cp-backend-dev-doc`：探索 codebase，產生後端開發文件 HTML／Markdown。
 6. `cp-task-dev`：需求分析、TDD 測試計畫、Red → Green → Refactor、開發進度紀錄。
 7. `cp-code-review`：需要時進行提測前 review。
@@ -71,9 +71,10 @@ flowchart TD
 ├── project-doc/
 │   ├── requirement-analysis.md
 │   ├── affected-repos.md
-│   ├── business-brief.md
-│   ├── requirement-risk-test-brief.md
-│   ├── release-assessment.md
+│   ├── task-estimation.html
+│   ├── pre-dev-brief.html
+│   ├── business-brief.html
+│   ├── release-assessment.html
 │   └── backend-dev-doc.md
 ├── test-file-script/
 │   └── tdd-test-plan.md
@@ -87,7 +88,7 @@ flowchart TD
     └── release-assessment/
 ```
 
-`simple` 任務至少維護 `requirement-risk-test-brief.md`；`complex` 任務額外維護 `business-brief.md` 與 `release-assessment.md`。涉及 DB / Redis / 預發正式共用資源時，預設為 `complex`。QA 測試矩陣報告是 MR 建立後的收尾產物，放在 `end-version-report/qa-test-matrix/`。
+`simple` 任務至少維護 `task-estimation.html` 與 `pre-dev-brief.html`；`complex` 任務額外維護 `business-brief.html`；涉及 DB / Redis / MQ / 排程 / 回調、正式資料修復或需要明確上線 / 回滾計畫時額外維護 `release-assessment.html`。涉及 DB / Redis / 預發正式共用資源時，預設為 `complex`。`requirement-risk-test-brief` 已從流程移除，職責由 `pre-dev-brief.html` 承擔。QA 測試矩陣報告是 MR 建立後的收尾產物，放在 `end-version-report/qa-test-matrix/`。
 
 跨 session 續跑時，先讀取：
 
@@ -95,9 +96,9 @@ flowchart TD
 workflow-state.md
 requirement-changes.md
 affected-repos.md
-business-brief.md
-requirement-risk-test-brief.md
-release-assessment.md
+pre-dev-brief.html
+business-brief.html
+release-assessment.html
 dev-progress.md
 ```
 
@@ -235,7 +236,7 @@ scripts/uninstall-codex.sh --dry-run
 
 | 階段 | Skill | 用途 | 產出 |
 |---|---|---|---|
-| 1 建需求 | **cp-task-template** | 問放哪 → 用 `cp-task-folder-template` 建 task 資料夾，再產禪道任務模板 | `task-{編號}/` 資料夾 + 主任務 + 前/後端子任務 HTML |
+| 1 建需求 | **cp-task-template** | 問放哪 → 用 `skills/cp-task-template/references/task-folder-template/` 建 task 資料夾，再產禪道任務模板 | `task-{編號}/` 資料夾 + 主任務 + 前/後端子任務 HTML |
 | 2 開發文件 | **cp-backend-dev-doc** | 探索 java-service，起草後端設計 | dev-doc `.html`（貼禪道）+ `.md`（開發者看） |
 | 3 TDD coding | **cp-task-dev** | 需求分析、TDD 測試計畫、實作與開發交接紀錄 | `project-doc/requirement-analysis.md`、`test-file-script/tdd-test-plan.md`、`handoff/dev-progress.md` |
 | — commit | **commit** | 繁中 Conventional Commit（全域 skill，非本專案） | git commit |
@@ -245,7 +246,7 @@ scripts/uninstall-codex.sh --dry-run
 | 7 提交 MR | **cp-mr-submit** | 透過 Chrome 建立 GitLab MR、設定 Assignee 與 merge options | MR URL 清單 |
 | 8 合併衝突 | **cp-merge-conflict** | 半自動：分析兩側改動給建議，人確認才寫入 | 合併建議 |
 
-| 輔助 | **grill-me** | 逐題釐清任務需求、風險、測試與上線決策；simple 輕量、complex 完整 | 確認後供業務說明、風險測試說明、上線評估更新 |
+| 輔助 | **grill-me** | 逐題釐清任務需求、風險、測試與上線決策；simple 輕量、complex 完整 | 確認後供 `pre-dev-brief.html`、`business-brief.html`、`release-assessment.html` 更新 |
 | 品質閘門 | **karpathy-guidelines** | 融入 `cp-backend-workflow`、`cp-task-dev`、`cp-code-review`：先釐清假設、保持簡潔、精準修改、定義可驗證目標 | 更小範圍的 diff、可追溯的 TDD case、明確驗證標準 |
 | 總控 | **cp-backend-workflow** | 判斷目前階段並協調各子 skill，管理多 repo 進度 | 完整流程狀態與 MR URL |
 

@@ -57,8 +57,8 @@ description: >
 
 若 `task_dir` 中存在以下文件，也必須讀取並對齊測試範圍：
 
-- `{task_dir}/project-doc/requirement-risk-test-brief.md`
-- `{task_dir}/project-doc/release-assessment.md`
+- `{task_dir}/project-doc/pre-dev-brief.html`
+- `{task_dir}/project-doc/release-assessment.html`
 
 ### Step 2：探索 Codebase
 
@@ -97,7 +97,7 @@ Codebase 根目錄：`/Users/jixiangwang/Documents/pte-work/gitlab/cp-v2/cp-back
 - 業務邏輯不通過（例如餘額不足、狀態錯誤）
 - 權限不足（若有）
 
-若需求風險與測試說明或上線評估已存在，自測案例要覆蓋其中的 P0 / 高風險項目，尤其 DB / Redis 影響與預發驗證重點。
+若 `pre-dev-brief.html` 或 `release-assessment.html` 已存在，自測案例要覆蓋其中的 P0 / 高風險項目，尤其 DB / Redis 影響與預發驗證重點。
 
 **非 API / 人工操作流程（必須檢查）：**
 - 若功能需要透過後台頁面、前端頁面或營運操作完成，必須在測試案例中記錄操作路徑、前置資料、操作步驟、預期畫面 / DB / API 結果。

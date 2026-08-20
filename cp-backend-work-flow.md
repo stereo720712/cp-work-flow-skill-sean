@@ -466,7 +466,7 @@ QA 測試矩陣報告是 MR 建立後的收尾產物，不是開發前文件。
 
 - 需要處理的 repo 已建立 MR。
 - 不存在必要 repo 的 `needs_update`、`blocked`、`needs_confirm`。
-- MR 描述、自測報告、需求風險與測試說明、上線評估都是最新狀態。
+- MR 描述、自測報告、`pre-dev-brief.html`、`release-assessment.html` 都是最新狀態。
 
 產出位置：
 

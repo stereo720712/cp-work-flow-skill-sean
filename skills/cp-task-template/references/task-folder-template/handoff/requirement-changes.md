@@ -24,8 +24,9 @@
 
 需要重做：
 - [ ] 任務描述
-- [ ] 業務說明
-- [ ] 需求風險與測試說明
+- [ ] `pre-dev-brief.html`
+- [ ] `business-brief.html`（complex 才產）
+- [ ] `release-assessment.html`（有上線風險才產）
 - [ ] 後端開發文件
 - [ ] coding
 - [ ] code review

@@ -24,9 +24,9 @@ description: >
 
 若任務資料夾中已有以下文件，必須先讀取並作為實作前輸入：
 
-- `project-doc/business-brief.md`：大任務的業務流程與角色影響。
-- `project-doc/requirement-risk-test-brief.md`：PM / 後端 / 前端 / QA 會議確認過的改動、風險與測試說明。
-- `project-doc/release-assessment.md`：預發 / 正式上線評估，尤其 DB / Redis 共用資源影響。
+- `project-doc/pre-dev-brief.html`：開發前提報主文件，需求背景、方案、影響範圍、風險與測試重點。
+- `project-doc/business-brief.html`：complex 任務的詳細業務流程與角色影響。
+- `project-doc/release-assessment.html`：預發 / 正式上線評估，尤其 DB / Redis 共用資源影響。
 
 使用 `references/` 下的同名模板建立文件；若文件已存在，保留既有內容，在原文件上追加版本與進度，不覆蓋歷史紀錄。
 
