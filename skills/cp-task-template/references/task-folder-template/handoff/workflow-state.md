@@ -37,7 +37,7 @@
 | 後端開發文件 | project-doc/ | pending |
 | 自測報告 | test-file-script/ | pending |
 | MR 描述 | end-version-report/mr-description/ | pending |
-| QA 測試矩陣報告 | end-version-report/qa-test-matrix/qa-test-matrix.md | pending |
+| 測試場景用例 | end-version-report/test-scenarios/test-scenarios.html | pending |
 
 ## 使用者決策
 
@@ -48,6 +48,7 @@
 - grill_me:
 - business_brief:
 - release_assessment:
+- test_scenarios:
 
 ## 最近進度
 

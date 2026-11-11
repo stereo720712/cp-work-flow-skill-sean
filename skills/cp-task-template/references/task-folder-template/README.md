@@ -51,7 +51,7 @@ cp -r ~/.claude/skills/cp-task-template/references/task-folder-template \
 - `project-doc/pre-dev-brief.html`：開發前主管提報主文件。
 - `project-doc/business-brief.html`：complex 任務的詳細業務流程附件。
 - `project-doc/release-assessment.html`：有上線風險時才產，記錄 DB / Redis 影響與上線 / 回滾方式。
-- `end-version-report/qa-test-matrix/qa-test-matrix.md`：MR 建立後的 QA 測試矩陣報告，作為交付 QA 的最終測試範圍。
+- `end-version-report/test-scenarios/test-scenarios.html`：MR 建立後交付測試部門的測試場景用例，以改動 API 推出業務場景。
 
 下次由 `/cp-backend-workflow` 繼續任務時，先讀 workflow state、需求變更、affected repos 與會議前置文件，再判斷下一步。
 
@@ -69,4 +69,4 @@ cp -r ~/.claude/skills/cp-task-template/references/task-folder-template \
 - 這四份是 `cp-backend-workflow` 依當下內容產出的 HTML，模板不放空殼檔。`requirement-risk-test-brief` 已從流程移除，職責由 `pre-dev-brief.html` 承擔。
 - 涉及 DB / Redis / MQ / 排程 / 回調 / 通知、資金 / 訂單 / 商戶 / 交易員 / 權限 / 風控、或預發正式共用資源時，預設為 `complex`。
 - 所有任務都先用 `grill-me` 逐題釐清；`simple` 任務使用輕量 grill，`complex` 任務使用完整 grill，再更新上述文件。
-- QA 測試矩陣報告在 MR 建立後產出，此時需求、程式、MR、自測與上線評估都應已定案。
+- 測試場景用例在 MR 建立後產出正式版（使用者要求時可在 coding 完成後先出草稿），格式依 `cp-backend-workflow/references/test-scenarios-template.html`。

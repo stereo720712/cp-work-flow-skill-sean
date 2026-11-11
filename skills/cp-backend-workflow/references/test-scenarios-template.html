@@ -1,0 +1,107 @@
+<!--
+  task-{編號} 測試場景用例模板
+  用途：交付測試部門，可直接貼入禪道富文本。只用 inline style 與表格，不依賴外部 CSS / JS。
+  產生規則見 cp-backend-workflow SKILL.md「測試場景用例」節。
+  - 每支改動 API 一節；多 API 串成的流程另列「端到端業務場景」。
+  - 來源欄：需求 / diff / TDD / 自測 / 推導（推導 = code 推出、業務預期待 PM / QA 確認）。
+  - 不知道的資訊填 {待補充}，不要編。複製本模板後刪除這段註解與不適用的區塊。
+-->
+<div style="font-family:-apple-system,'PingFang TC','Microsoft JhengHei',sans-serif;font-size:14px;line-height:1.6;color:#222;">
+
+<h2 style="margin:0 0 8px;">task-{編號} 測試場景用例</h2>
+
+<table style="border-collapse:collapse;margin-bottom:16px;" border="1" cellpadding="6">
+  <tbody>
+    <tr><th style="background:#f2f4f7;text-align:left;">任務</th><td>task-{編號} {任務標題}</td></tr>
+    <tr><th style="background:#f2f4f7;text-align:left;">衝刺版號</th><td>{sprint_version}</td></tr>
+    <tr><th style="background:#f2f4f7;text-align:left;">需求版本</th><td>R{n}</td></tr>
+    <tr><th style="background:#f2f4f7;text-align:left;">狀態</th><td>draft / final / needs_update</td></tr>
+    <tr><th style="background:#f2f4f7;text-align:left;">測試環境</th><td>{test 環境站台 / 部署版本}</td></tr>
+    <tr><th style="background:#f2f4f7;text-align:left;">產出日期</th><td>{YYYY-MM-DD}</td></tr>
+  </tbody>
+</table>
+
+<h3>一、MR 與分支</h3>
+<table style="border-collapse:collapse;width:100%;margin-bottom:16px;" border="1" cellpadding="6">
+  <thead style="background:#f2f4f7;">
+    <tr><th>repo</th><th>branch</th><th>MR URL</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>{repo}</td><td>feature/{衝刺版號}_task-{編號}</td><td>{MR URL}</td></tr>
+  </tbody>
+</table>
+
+<h3>二、改動 API 總覽</h3>
+<table style="border-collapse:collapse;width:100%;margin-bottom:16px;" border="1" cellpadding="6">
+  <thead style="background:#f2f4f7;">
+    <tr><th>#</th><th>服務</th><th>API / 入口</th><th>改動類型</th><th>改了什麼</th><th>影響頁面 / 角色</th><th>場景數</th><th>最高優先級</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>A1</td><td>{服務}</td><td><code>POST /path</code></td><td>新增 / 修改 / 行為變更 / 間接</td><td>{白話說明}</td><td>{頁面路徑}／{角色}</td><td>{n}</td><td>P0</td></tr>
+    <tr><td>A2</td><td>{服務}</td><td>MQ <code>{topic}</code> / 排程 <code>{job}</code></td><td>修改</td><td></td><td></td><td></td><td></td></tr>
+  </tbody>
+</table>
+
+<h3>三、共用前置</h3>
+<ul>
+  <li><b>測試帳號</b>：{角色、數量、需要的設定，例如綁 Google、白名單 IP}</li>
+  <li><b>測試資料</b>：{要先準備的資料或狀態}</li>
+  <li><b>部署後注意</b>：{重新登入 / 先跑 SQL / 清快取}</li>
+  <li><b>取得 token / 簽名</b>：{方式}</li>
+</ul>
+
+<h3>四、各 API 測試場景</h3>
+
+<h4>A1　<code>POST /path</code>　{API 名稱}</h4>
+<ul>
+  <li><b>入口</b>：{頁面路徑，例如 商戶後台 → 安全設置 → 公鑰}</li>
+  <li><b>這次改了什麼</b>：{白話說明改動與原因}</li>
+  <li><b>Request 範本</b>：<br>
+    URL：<code>POST https://{domain}/api/...</code><br>
+    Header：<code>content-type: application/json</code>、<code>token: &lt;token&gt;</code><br>
+    Body：<code>{ "field": "value" }</code>（欄位格式，例如密碼填 32 碼小寫 MD5、金額 2 位小數）
+  </li>
+</ul>
+<table style="border-collapse:collapse;width:100%;margin-bottom:16px;" border="1" cellpadding="6">
+  <thead style="background:#f2f4f7;">
+    <tr><th>編號</th><th>類型</th><th>業務場景</th><th>前置條件</th><th>操作步驟</th><th>預期結果</th><th>優先級</th><th>來源</th><th>開發已測</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>A1-S01</td><td>主流程</td><td>{場景}</td><td>{前置}</td><td>{步驟}</td><td>回 code 0；列表新增一筆；DB <code>{table.column}</code> = {值}</td><td>P0</td><td>需求</td><td>通過 / test / {MM-DD}</td></tr>
+    <tr><td>A1-S02</td><td>參數校驗</td><td></td><td></td><td></td><td>回 code {xxxx}「{訊息}」，資料不變</td><td>P1</td><td>diff</td><td>—</td></tr>
+    <tr><td>A1-S03</td><td>角色權限</td><td></td><td></td><td></td><td></td><td>P0</td><td>推導</td><td>—</td></tr>
+  </tbody>
+</table>
+<p style="margin:0 0 16px;color:#666;">注意 / 不在範圍：{說明}</p>
+
+<h3>五、端到端業務場景</h3>
+<table style="border-collapse:collapse;width:100%;margin-bottom:16px;" border="1" cellpadding="6">
+  <thead style="background:#f2f4f7;">
+    <tr><th>編號</th><th>業務流程</th><th>涉及 API</th><th>操作步驟</th><th>每步預期結果</th><th>優先級</th><th>來源</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>E2E-01</td><td>{例如 建單 → 付款 → 回調 → 查詢}</td><td>A1 → A2</td><td>{步驟}</td><td>{每步狀態 / 畫面 / DB 變化}</td><td>P0</td><td>需求</td></tr>
+  </tbody>
+</table>
+
+<h3>六、回歸範圍</h3>
+<table style="border-collapse:collapse;width:100%;margin-bottom:16px;" border="1" cellpadding="6">
+  <thead style="background:#f2f4f7;">
+    <tr><th>既有功能</th><th>為什麼要回歸（共用的 Service / 表 / Redis key）</th><th>測試方式</th></tr>
+  </thead>
+  <tbody>
+    <tr><td></td><td></td><td></td></tr>
+  </tbody>
+</table>
+
+<h3>七、不測項目與待確認</h3>
+<table style="border-collapse:collapse;width:100%;margin-bottom:16px;" border="1" cellpadding="6">
+  <thead style="background:#f2f4f7;">
+    <tr><th>項目</th><th>不測 / 待確認原因</th><th>風險接受人 / 確認人</th></tr>
+  </thead>
+  <tbody>
+    <tr><td></td><td></td><td></td></tr>
+  </tbody>
+</table>
+
+</div>

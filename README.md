@@ -38,7 +38,7 @@ flowchart TD
     K --> L["push<br/>使用者明確要求"]
     L --> M["cp-mr-description<br/>產 MR 描述"]
     M --> N["cp-mr-submit<br/>建立 GitLab MR"]
-    N --> O["QA 測試矩陣報告<br/>MR 後收尾產物"]
+    N --> O["測試場景用例 HTML<br/>交付測試部門"]
     I --> P["cp-merge-conflict<br/>衝突處理"]
     M --> P
 ```
@@ -55,7 +55,7 @@ flowchart TD
 10. `push`：使用者明確要求後執行 push。
 11. `cp-mr-description`：產生每個 repo 的 MR 描述。
 12. `cp-mr-submit`：使用者確認後建立 GitLab MR。
-13. QA 測試矩陣報告：MR 建立後，依最終需求、MR、自測與上線評估產生交付 QA 的測試矩陣。
+13. 測試場景用例：MR 建立後，以改動的 API 推出業務場景，產出交付測試部門的 `test-scenarios.html`。
 14. `cp-merge-conflict`：發生合併衝突時分析並等待使用者確認後修改。
 
 其中 review 和自測報告是可依任務需求啟用的階段；coding 完成後，必須先完成需要的驗證，再進入 commit、push 與 MR 流程。
@@ -84,11 +84,11 @@ flowchart TD
 │   └── dev-progress.md
 └── end-version-report/
     ├── mr-description/
-    ├── qa-test-matrix/
+    ├── test-scenarios/
     └── release-assessment/
 ```
 
-`simple` 任務至少維護 `task-estimation.html` 與 `pre-dev-brief.html`；`complex` 任務額外維護 `business-brief.html`；涉及 DB / Redis / MQ / 排程 / 回調、正式資料修復或需要明確上線 / 回滾計畫時額外維護 `release-assessment.html`。涉及 DB / Redis / 預發正式共用資源時，預設為 `complex`。`requirement-risk-test-brief` 已從流程移除，職責由 `pre-dev-brief.html` 承擔。QA 測試矩陣報告是 MR 建立後的收尾產物，放在 `end-version-report/qa-test-matrix/`。
+`simple` 任務至少維護 `task-estimation.html` 與 `pre-dev-brief.html`；`complex` 任務額外維護 `business-brief.html`；涉及 DB / Redis / MQ / 排程 / 回調、正式資料修復或需要明確上線 / 回滾計畫時額外維護 `release-assessment.html`。涉及 DB / Redis / 預發正式共用資源時，預設為 `complex`。`requirement-risk-test-brief` 已從流程移除，職責由 `pre-dev-brief.html` 承擔。測試場景用例是 MR 建立後交付測試部門的產物，放在 `end-version-report/test-scenarios/test-scenarios.html`。
 
 跨 session 續跑時，先讀取：
 

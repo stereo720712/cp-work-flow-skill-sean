@@ -40,7 +40,7 @@ cp-backend-workflow-skill
 - `workflow-state.md` 支援中斷後續跑。
 - `requirement-changes.md` 支援需求變更版本。
 - `cp-task-dev` 維護 TDD 與 dev-progress。
-- review、self-test、MR 描述、QA 測試矩陣都能讀取前面階段產物。
+- review、self-test、MR 描述、測試場景用例都能讀取前面階段產物。
 
 ### 2. 抽出 workflow core concepts
 

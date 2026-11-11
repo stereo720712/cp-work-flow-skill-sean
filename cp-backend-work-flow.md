@@ -58,8 +58,8 @@ flowchart TD
     Y --> Z{使用者確認建立 MR?}
     Z -- 是 --> AA[cp-mr-submit 建立 GitLab MR]
     Z -- 否 --> U
-    AA --> AB{需要 QA 測試矩陣?}
-    AB -- 是 --> AC[產 end-version-report/qa-test-matrix/qa-test-matrix.md]
+    AA --> AB{需要交付測試部門?}
+    AB -- 是 --> AC[產 end-version-report/test-scenarios/test-scenarios.html]
     AB -- 否 --> AD[流程完成]
     AC --> FD4[drawio-diagram 產測試路徑圖]
     FD4 --> AD
@@ -118,15 +118,15 @@ flowchart TD
    └── cp-mr-description：每個 repo 產 MR Markdown
    └── cp-mr-submit：使用者確認後建立 GitLab MR
 
-11. QA 測試矩陣報告
-    └── MR 建立後，依最終需求、MR、自測與上線評估產出 QA 測試矩陣
+11. 測試場景用例
+    └── MR 建立後，以改動的 API 推出業務場景，產出交付測試部門的 test-scenarios.html
     └── drawio-diagram：把必測路徑畫成測試路徑圖（正常 / 異常泳道）
 
 12. 合併衝突
     └── cp-merge-conflict：分析兩側改動並提出方案，等待使用者確認後才寫入
 ```
 
-其中 review、自測報告、MR 提交與 QA 測試矩陣可依任務需要啟用；coding 完成後必須先完成需要的驗證，再進入 commit、push 與 MR。
+其中 review、自測報告、MR 提交與測試場景用例可依任務需要啟用；coding 完成後必須先完成需要的驗證，再進入 commit、push 與 MR。
 
 ### 流程步驟與 Skill 對照
 
@@ -145,15 +145,15 @@ flowchart TD
 | 11. Push | 無專用 skill，由總控執行 | `cp-backend-workflow` | 使用者明確要求 push，且每個 repo 已 commit | 每個 repo 各自 push |
 | 12. MR 描述 | `cp-mr-description` | `affected-repos.md`、`cp-task-dev`、`cp-self-test-report`、`cp-code-review` | 使用者要開 MR 或產 MR 描述，且 repo 範圍已確認 | `end-version-report/mr-description/` |
 | 13. MR 提交 | `cp-mr-submit` | Chrome / GitLab 登入狀態、`cp-mr-description` | 使用者確認 MR 描述並要求建立 MR | GitLab MR URL |
-| 14. QA 測試矩陣報告 | `cp-backend-workflow` | `cp-task-dev`、`cp-self-test-report`、`cp-mr-description` | MR 建立後，使用者需要交付 QA 測試範圍 | `end-version-report/qa-test-matrix/qa-test-matrix.md` |
+| 14. 測試場景用例 | `cp-backend-workflow` | `cp-task-dev`、`cp-self-test-report`、`cp-code-review` | MR 建立後要交付測試部門；或使用者要求提早產草稿 | `end-version-report/test-scenarios/test-scenarios.html` |
 | 15. 合併衝突 | `cp-merge-conflict` | `cp-backend-workflow` 暫停後續階段 | 發生 conflict 時跑 | 衝突分析、合併建議、確認後寫入 |
-| 16. 流程圖 | `drawio-diagram` | `grill-me` 結論、`cp-backend-dev-doc`、`qa-test-matrix.md` | 需求釐清後、有狀態流轉時、後端設計後、QA 測試矩陣完成後，或使用者要求畫圖 / 要貼 Confluence | `project-doc/diagrams/*.drawio`，有 draw.io desktop 時另產 `.png` |
+| 16. 流程圖 | `drawio-diagram` | `grill-me` 結論、`cp-backend-dev-doc`、`test-scenarios.html` | 需求釐清後、有狀態流轉時、後端設計後、測試場景完成後，或使用者要求畫圖 / 要貼 Confluence | `project-doc/diagrams/*.drawio`，有 draw.io desktop 時另產 `.png` |
 
 輔助 skill 調用規則：
 
 - `karpathy-guidelines` 是品質閘門，不是獨立階段；需求釐清、後端設計、TDD、review 都要套用。
 - `grill-me` 只負責逐題釐清決策，不直接改文件；結論由總控寫入業務、風險、測試或上線文件。
-- `cp-task-dev` 的測試紀錄是 review、自測報告、MR 描述與 QA 測試矩陣的主要輸入之一。
+- `cp-task-dev` 的測試紀錄是 review、自測報告、MR 描述與測試場景用例的主要輸入之一。
 - `cp-code-review` 的結果可回饋到 `cp-task-dev` 修正，也可作為 commit / MR 前的風險依據。
 - `cp-backend-dev-doc` 完成後必須回饋 `affected-repos.md`，避免後續 review / commit / MR 範圍過期。
 
@@ -189,7 +189,7 @@ flowchart TD
 │   └── dev-progress.md
 └── end-version-report/
     ├── mr-description/
-    ├── qa-test-matrix/
+    ├── test-scenarios/
     └── release-assessment/
 ```
 
@@ -438,7 +438,7 @@ feature/{衝刺版號}_task-{任務編號}
 - 不自動加入 unrelated changes。
 - commit 前需確認測試紀錄與 dev-progress 已更新。
 
-Commit 使用全域 `commit` skill，產生繁中 Conventional Commit。
+Commit 使用全域 `commit` skill，產生繁中 Conventional Commit；未安裝時依 `cp-backend-workflow` 的「Commit 規則」節執行。
 
 ---
 
@@ -458,23 +458,21 @@ Commit 使用全域 `commit` skill，產生繁中 Conventional Commit。
 
 ---
 
-## Step 11：QA 測試矩陣報告
+## Step 11：測試場景用例
 
-QA 測試矩陣報告是 MR 建立後的收尾產物，不是開發前文件。
+交付測試部門的測試用例 HTML，以這次改動的 API 為主軸推出業務場景。詳細規則見 `cp-backend-workflow` 的「測試場景用例」節，格式依 `references/test-scenarios-template.html`。
 
-產生前必須確認：
-
-- 需要處理的 repo 已建立 MR。
-- 不存在必要 repo 的 `needs_update`、`blocked`、`needs_confirm`。
-- MR 描述、自測報告、`pre-dev-brief.html`、`release-assessment.html` 都是最新狀態。
+- 正式版在 MR 建立後產生（必要 repo 皆 `mr_created`，且沒有 `needs_update`、`blocked`、`needs_confirm`）；使用者要求時可在 coding 完成後先出草稿。
+- 步驟：從 diff 盤點改動的 API（含間接影響與 MQ / 排程 / 回調入口）→ 每支 API 依主流程、參數校驗、角色權限、狀態前置、邊界、冪等併發、外部依賴、相容舊資料、副作用、前端回顯推出場景 → 多 API 串成的流程另列端到端場景。
+- 每個場景寫具體預期結果，標來源（需求 / diff / TDD / 自測 / 推導）；不確定的標 `{待補充}`，不編造。
 
 產出位置：
 
 ```text
-end-version-report/qa-test-matrix/qa-test-matrix.md
+end-version-report/test-scenarios/test-scenarios.html
 ```
 
-矩陣完成後用 `drawio-diagram` 產 `diagrams/task-{編號}-test-path.drawio`：lane 分「正常路徑」與「異常路徑」，異常分支用紅色節點。內容必須與矩陣一致，矩陣改了要一併重產。
+場景完成後用 `drawio-diagram` 產 `diagrams/task-{編號}-test-path.drawio`：lane 分「正常路徑」與「異常路徑」，異常分支用紅色節點。內容必須與 `test-scenarios.html` 一致，場景改了要一併重產。
 
 ---
 

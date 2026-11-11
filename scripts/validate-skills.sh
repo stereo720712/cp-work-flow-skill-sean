@@ -7,6 +7,7 @@ ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 SKILLS_DIR="$ROOT/skills"
 CODEX_QUICK_VALIDATE="$HOME/.codex/skills/.system/skill-creator/scripts/quick_validate.py"
 STRICT_CODEX=0
+CODEX_SKIPPED=0
 
 fail() {
   echo "ERROR: $*" >&2
@@ -96,7 +97,15 @@ while IFS= read -r skill_dir; do
     echo "WARN: Codex quick_validate.py not found, skipped Codex-specific validation: $CODEX_QUICK_VALIDATE" >&2
   fi
 
-  if [[ "$codex_status" -ne 0 ]]; then
+  if [[ "$codex_status" -ne 0 && "$codex_output" == *"ModuleNotFoundError"* ]]; then
+    # 驗證器本身跑不起來（例如缺 pyyaml），不是 skill 有問題；記為 skipped，不要算成通過
+    if [[ "$STRICT_CODEX" -eq 1 ]]; then
+      echo "$codex_output" >&2
+      fail "Codex quick_validate.py cannot run (missing Python module). Try: python3 -m pip install pyyaml"
+    fi
+    echo "WARN: $name Codex validation skipped: quick_validate.py cannot run (missing Python module)" >&2
+    CODEX_SKIPPED=$((CODEX_SKIPPED + 1))
+  elif [[ "$codex_status" -ne 0 ]]; then
     if [[ "$STRICT_CODEX" -eq 1 ]]; then
       echo "$codex_output" >&2
       fail "$name failed Codex quick_validate.py"
@@ -108,4 +117,8 @@ done < <(find "$SKILLS_DIR" -mindepth 1 -maxdepth 1 -type d | sort)
 echo "Checking Claude install compatibility with dry-run"
 "$SCRIPT_DIR/install-claude.sh" --dry-run >/dev/null
 
-echo "All skill validations passed."
+if [[ "$CODEX_SKIPPED" -gt 0 ]]; then
+  echo "Basic checks passed, but Codex validation was SKIPPED for $CODEX_SKIPPED skill(s): quick_validate.py cannot run. Install pyyaml (python3 -m pip install pyyaml) and re-run."
+else
+  echo "All skill validations passed."
+fi
