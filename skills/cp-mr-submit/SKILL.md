@@ -1,7 +1,8 @@
 ---
 name: cp-mr-submit
 description: >
-  CP GitLab MR 提交流程：當使用者要求提交、建立、開啟或送出 MR，且已有分支與 MR 描述時使用。透過 Chrome GitLab 頁面逐一建立多 repo MR，填入指定 Markdown、設定 Assignee、Merge options，並回報 MR 網址。
+  CP GitLab MR 提交流程：當使用者要求提交、建立、開啟或送出 MR（例如「我要開 MR」、「幫我送 MR」），且已有分支與 MR 描述時使用。透過 Chrome GitLab 頁面逐一建立多 repo MR，填入指定 Markdown、設定 Assignee、Merge options，並回報 MR 網址。
+  不要用在：還沒有 MR 描述時（先用 cp-mr-description 產生）；review MR（改用 cp-code-review）。
 ---
 
 # CP GitLab MR 提交流程

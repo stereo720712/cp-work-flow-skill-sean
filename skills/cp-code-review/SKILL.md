@@ -1,9 +1,10 @@
 ---
 name: cp-code-review
 description: >
-  CP Code Review：當使用者說「幫我 review code」、「review 一下」、「我要提測了幫我看看」、「review 這個 MR」時，務必使用這個 skill。
+  CP Code Review（review 預設入口）：使用者要 review code、review MR、提測前看改動時，預設一律使用這個 skill，例如「幫我 review code」、「review 一下」、「我要提測了幫我看看」、「review 這個 MR」。
   支援兩種情境：(1) 提測前自我 review 自己的 code diff；(2) review 別人提交的 GitLab MR。
   凡是提到「code review」、「review MR」、「review 我的 code」、「看一下改動」、「提測前確認」時，都應主動觸發此 skill。
+  不要用在：使用者明確說要用 GitNexus 時（例如「用 gitnexus review」、「用 gitnexus 看有沒有漏掉的 API」），改用 gitnexus-review；只要產生自測報告時，改用 cp-self-test-report。
 ---
 
 # CP Code Review

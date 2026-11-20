@@ -2,6 +2,7 @@
 name: cp-task-dev
 description: >
   CP 任務 TDD 開發流程：當使用者要開始實作 CP／禪道後端任務、需要釐清需求、設計測試案例、以 TDD 方式 coding，或需要留下可供跨 Agent／Session 接手的開發紀錄時使用。協助需求分析、測試先行、實作進度與測試結果紀錄；不取代 cp-backend-workflow，也不自行 commit、push 或建立 MR。
+  不要用在：產生後端開發文件（改用 cp-backend-dev-doc）；建立禪道任務模板（改用 cp-task-template）。
 ---
 
 # CP 任務 TDD 開發流程

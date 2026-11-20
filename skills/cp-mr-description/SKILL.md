@@ -1,9 +1,10 @@
 ---
 name: cp-mr-description
 description: >
-  CP MR 描述產生器：當使用者說「幫我寫 MR」、「產出 MR 描述」、「我要開 MR」、「結案了幫我寫 merge request」時，務必使用這個 skill。
+  CP MR 描述產生器：當使用者說「幫我寫 MR」、「產出 MR 描述」、「寫 MR 描述」、「結案了幫我寫 merge request」時，務必使用這個 skill。
   根據任務資訊與 code 改動，產出完整的 GitLab MR 描述 Markdown，讓使用者直接複製貼上。
-  凡是提到「MR」、「merge request」、「結案」、「開 PR」時，都應主動觸發此 skill。
+  凡是提到「MR 描述」、「merge request 描述」、「結案」時，都應主動觸發此 skill。
+  不要用在：實際在 GitLab 建立或送出 MR（改用 cp-mr-submit）；review MR（改用 cp-code-review）。
 ---
 
 # CP MR 描述產生器
