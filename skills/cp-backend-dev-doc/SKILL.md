@@ -44,11 +44,11 @@ description: >
 
 ### Step 2：探索 Codebase
 
-Codebase 根目錄：`/Users/jixiangwang/Documents/pte-work/gitlab/cp-v2/cp-backend/java-service`
+Codebase 根目錄：`~/Documents/cp-code/backend-v2`
 
 先讀取 AGENTS.md 了解整體架構：
 ```
-/Users/jixiangwang/Documents/pte-work/gitlab/cp-v2/cp-backend/java-service/AGENTS.md
+~/Documents/cp-code/backend-v2/backend-agent-skill/AGENTS.md
 ```
 
 根據任務描述判斷影響的服務，進入對應目錄：
@@ -143,4 +143,4 @@ mkdir -p {task_dir}/project-doc
 
 - `references/backend-dev-doc-template.html` — 開發文件 HTML 模板（inline 樣式，可直接貼進禪道）
 - `drawio-diagram` skill — 把流程說明的 mermaid 轉成可貼 Confluence 的 draw.io 圖
-- `/Users/jixiangwang/Documents/pte-work/gitlab/cp-v2/cp-backend/java-service/AGENTS.md` — 系統架構總覽
+- `~/Documents/cp-code/backend-v2/backend-agent-skill/AGENTS.md` — 系統架構總覽

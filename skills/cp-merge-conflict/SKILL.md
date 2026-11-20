@@ -132,4 +132,4 @@ git status
 
 ## 系統架構參考
 
-- `/Users/jixiangwang/Documents/pte-work/gitlab/cp-v2/cp-backend/java-service/AGENTS.md` — 服務架構與業務流程
+- `~/Documents/cp-code/backend-v2/backend-agent-skill/AGENTS.md` — 服務架構與業務流程

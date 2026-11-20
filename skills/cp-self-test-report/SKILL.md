@@ -62,7 +62,7 @@ description: >
 
 ### Step 2：探索 Codebase
 
-Codebase 根目錄：`/Users/jixiangwang/Documents/pte-work/gitlab/cp-v2/cp-backend/java-service`
+Codebase 根目錄：`~/Documents/cp-code/backend-v2`
 
 若有 `affected-repos.md`，以其中已完成 coding 且非 stale 的後端 repo 為探索範圍；沒有時先要求補 inventory，只有明確要求 draft 時才依任務描述、後端開發文件與 git diff 推測。
 
@@ -164,4 +164,4 @@ mkdir -p {task_dir}/test-file-script
 
 - `references/self-test-report-template.html` — 報告 HTML 格式模板
 - `{task_dir}/project-doc/task-{編號}-backend-dev-doc.md` — 同任務的開發文件（若已存在）
-- `/Users/jixiangwang/Documents/pte-work/gitlab/cp-v2/cp-backend/java-service/AGENTS.md` — 系統架構
+- `~/Documents/cp-code/backend-v2/backend-agent-skill/AGENTS.md` — 系統架構

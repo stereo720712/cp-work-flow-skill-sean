@@ -59,7 +59,7 @@ URL 裡的 `task-view-{編號}` 即任務編號。從頁面取得任務標題、
 1. 若 `cp-backend-workflow` 已傳入 `task_root` 或 `task_dir`，優先使用傳入值。
 2. 若使用者已提供任務目錄，直接確認是否沿用。
 3. 若未提供，先詢問要放在哪個任務文件根目錄；可建議預設值，但必須讓使用者確認。
-4. 預設根目錄只作 fallback：`/Users/jixiangwang/Documents/pte-work/gitlab/cp-v2/cp-backend/task-doc/{衝刺版號}/`。
+4. 預設根目錄只作 fallback：`~/Library/Mobile Documents/com~apple~CloudDocs/Obsidian Vault/pte-work/cp/cp-normal-task/{衝刺版號}/`。
 5. 最終 `task_dir` 一律明確寫成：`{task_root}/task-{編號}`。
 
 拿到並確認 `task_dir` 後，以資料夾模板複製一份：

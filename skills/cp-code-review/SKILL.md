@@ -197,5 +197,5 @@ glab mr diff {MR_ID}
 
 ## 系統架構參考
 
-- `/Users/jixiangwang/Documents/pte-work/gitlab/cp-v2/cp-backend/java-service/AGENTS.md`
-- `/Users/jixiangwang/Documents/pte-work/gitlab/cp-v2/cp-backend/java-service/backend-agent-skill/agent-rules/code-review.md`
+- `~/Documents/cp-code/backend-v2/backend-agent-skill/AGENTS.md`
+- `~/Documents/cp-code/backend-v2/backend-agent-skill/agent-rules/code-review.md`
