@@ -3,7 +3,7 @@ name: cp-merge-conflict
 description: >
   CP 合併衝突協助：當使用者說「幫我解衝突」、「有 merge conflict」、「合併衝突怎麼解」、「幫我看 conflict」時，務必使用這個 skill。
   採半自動流程：Claude 分析衝突兩側的改動並給出合併建議與風險說明，使用者確認後才實際寫入。
-  凡是提到「衝突」、「conflict」、「merge 失敗」、「<<<<<<」時，都應主動觸發此 skill。
+  凡是提到「衝突」、「conflict」、「merge 失敗」、「衝突標記」時，都應主動觸發此 skill。
 ---
 
 # CP 合併衝突協助
